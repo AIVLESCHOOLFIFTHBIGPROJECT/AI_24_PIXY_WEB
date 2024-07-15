@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
 import Header from './components/Header';
-import MainPage from './pages/MainPage';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          <Route path="/" element={<HomePage />} />
           {/* 다른 라우트들 */}
         </Routes>
       </Router>
