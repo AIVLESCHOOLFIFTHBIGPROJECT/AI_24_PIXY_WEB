@@ -5,7 +5,7 @@ import GallerySection from '../components/GallerySection';
 import FeaturesSection from '../components/FeaturesSection';
 import Footer from '../components/Footer';
 
-const MainPage = () => {
+const HomePage = () => {
   return (
     <>
       <HeroSection />
@@ -17,4 +17,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default HomePage;
