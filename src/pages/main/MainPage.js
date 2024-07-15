@@ -10,10 +10,11 @@ import CCTV from './CCTV';
 import Inquiry from './Inquiry';
 import Notice from './Notice';
 import Settings from './Settings';
+import Notifications from './Notifications';
 
 const MainPage = () => {
   return (
-    <div>
+    <>
       <MainHeader />
       <MainMenuBar />
       <div className="content">
@@ -22,14 +23,15 @@ const MainPage = () => {
           <Route path="pixycustom" element={<PixyCustom />} />
           <Route path="sales" element={<Sales />} />
           <Route path="cctv" element={<CCTV />} />
-          <Route path="Inquiry" element={<Inquiry />} />
+          <Route path="inquiry" element={<Inquiry />} />
           <Route path="notice" element={<Notice />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="notifications" element={<Notifications />} />
           <Route path="/" element={<Navigate to="dashboard" />} />
         </Routes>
       </div>
       <MainFooter />
-    </div>
+    </>
   );
 };
 
