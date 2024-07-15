@@ -5,7 +5,9 @@ import MainMenuBar from '../../components/main/MainMenuBar';
 import MainFooter from '../../components/main/MainFooter';
 import Dashboard from './Dashboard';
 import PixyCustom from './PixyCustom';
+import Sales from './Sales';
 import CCTV from './CCTV';
+import Inquiry from './Inquiry';
 import Notice from './Notice';
 import Settings from './Settings';
 
@@ -18,7 +20,9 @@ const MainPage = () => {
         <Routes>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="pixycustom" element={<PixyCustom />} />
+          <Route path="sales" element={<Sales />} />
           <Route path="cctv" element={<CCTV />} />
+          <Route path="Inquiry" element={<Inquiry />} />
           <Route path="notice" element={<Notice />} />
           <Route path="settings" element={<Settings />} />
           <Route path="/" element={<Navigate to="dashboard" />} />
