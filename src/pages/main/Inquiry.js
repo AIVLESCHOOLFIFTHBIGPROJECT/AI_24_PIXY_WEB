@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Inquiry = () => {
-  return <div>Inquiry Page</div>;
+  return <div style={{ height: '100vh' }}>Inquiry Page</div>;
 };
 
 export default Inquiry;
