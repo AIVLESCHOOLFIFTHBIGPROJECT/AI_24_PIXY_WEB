@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Notice = () => {
-  return <div>Notice Page</div>;
+  return <div style={{ height: '80vh' }}>Notice Page</div>;
 };
 
 export default Notice;
