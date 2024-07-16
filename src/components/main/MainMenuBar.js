@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemText, ListItemIcon, Toolbar, Box } from '@mui/material';
+import { ReactComponent as DashboardIcon } from '../../assets/icons/dashboard.svg';
 
 const drawerWidth = 240;
 
@@ -23,6 +24,7 @@ const MainMenuBar = () => {
       <Box sx={{ overflow: 'auto' }}>
         <List>
           <ListItem button component={Link} to="/main/dashboard">
+            <ListItemIcon><DashboardIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
           <ListItem button component={Link} to="/main/pixycustom">
