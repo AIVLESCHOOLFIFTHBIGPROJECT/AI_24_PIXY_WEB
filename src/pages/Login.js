@@ -3,6 +3,7 @@ import { TextField, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import api from '../api'; // api.js를 import합니다
 import Cookies from 'js-cookie';
+import { useUser } from '../contexts/UserContext'; // UserContext를 import합니다
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Login = () => {
     password: '',
   });
   const navigate = useNavigate();
+  const { login } = useUser(); // Context에서 login 함수를 가져옵니다
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,16 +24,22 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/api/user/login/normal/', formData);
-      const { access, refresh } = response.data;
+      const response = await api.post('/api/user/login/', formData);
+      const { access, refresh, user_id, user_name } = response.data;
+
       // 토큰을 쿠키에 저장
-      Cookies.set('access_token', access, { httpOnly: true, secure: true });
-      Cookies.set('refresh_token', refresh, { httpOnly: true, secure: true });
+      Cookies.set('access_token', access, { secure: true });
+      Cookies.set('refresh_token', refresh, { secure: true });
+
+      // 사용자 정보를 Context와 세션 스토리지에 저장
+      const userData = { user_id, user_name };
+      login(userData);
+
       alert('로그인 성공');
       navigate('/main/dashboard'); // 로그인 후 리다이렉트
     } catch (error) {
-      console.error('로그인 실패:', error);
-      alert('로그인 실패');
+      console.error('로그인 실패:', error.response.data);
+      alert(`로그인 실패: ${error.response.data.detail}`);
     }
   };
 
