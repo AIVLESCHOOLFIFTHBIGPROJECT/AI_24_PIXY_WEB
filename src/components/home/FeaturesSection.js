@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Typography, Grid, Card, CardContent, CardMedia } from '@mui/material';
-import sampleImage1 from '../assets/home_sample1.png';
-import sampleImage2 from '../assets/home_sample2.png';
-import sampleImage3 from '../assets/home_sample3.png';
-import sampleImage4 from '../assets/home_sample4.png';
+import sampleImage1 from '../../assets/home_sample1.png';
+import sampleImage2 from '../../assets/home_sample2.png';
+import sampleImage3 from '../../assets/home_sample3.png';
+import sampleImage4 from '../../assets/home_sample4.png';
 
 const FeatureCard = ({ title, image, description }) => (
   <Card>

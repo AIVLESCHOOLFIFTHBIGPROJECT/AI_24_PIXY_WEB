@@ -3,7 +3,8 @@ import { AppBar, Toolbar, Typography, Button, Box, Container, useMediaQuery } fr
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import logoHero from '../assets/logo-hero.svg';
-import logoBlack from '../assets/logo-black.svg'
+import logoBlack from '../assets/logo-black.svg';
+import logo from '../assets/logo.svg';
 
 const Header = () => {
   const theme = useTheme();
@@ -31,9 +32,14 @@ const Header = () => {
     <AppBar position="fixed" elevation={0} sx={headerStyle}>
       <Container maxWidth="xl" sx={{ px: { xl: '340px' } }}>
         <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
-          <Typography component="div">
-            <img src={isTop ? logoHero : logoBlack} alt="Pixy Logo" height="30" />
-          </Typography>
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100%' // 부모 요소의 높이에 맞춤
+        }}>
+          <img src={isTop ? logoHero : logo} alt="Pixy Logo" height="30" />
+        </Box>
 
           {!isMobile && (
             <Box sx={{ display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
