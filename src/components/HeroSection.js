@@ -5,6 +5,7 @@ import heroImage from '../assets/hero.png';
 const HeroSection = () => {
   return (
     <Box
+      id="hero-section"
       sx={{
         backgroundImage: `url(${heroImage})`,
         backgroundSize: 'cover',
