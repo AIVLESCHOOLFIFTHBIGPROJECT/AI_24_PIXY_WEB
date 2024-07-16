@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
 import HomePage from './pages/HomePage';
 import SignUp from './pages/SignUp';
+import Login from './pages/Login';
 import MainPage from './pages/main/MainPage';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUp />}/>
+          <Route path="/login" element={<Login />}/>
           <Route path="/main/*" element={<MainPage />}/>
           {/* 다른 라우트들 */}
         </Routes>

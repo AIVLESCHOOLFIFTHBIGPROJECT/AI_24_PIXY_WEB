@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Checkbox, FormControlLabel, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import api from '../api'; // api.js를 import합니다
 
 const SignUp = () => {
@@ -14,6 +15,7 @@ const SignUp = () => {
     is_agreement2: false,
     is_agreement3: false,
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -44,6 +46,7 @@ const SignUp = () => {
         },
       });
       alert('회원가입 성공');
+      navigate('/login'); 
     } catch (error) {
       console.error('회원가입 실패:', error);
       alert('회원가입 실패');
