@@ -14,6 +14,7 @@ const SignUp = () => {
     is_agreement1: false,
     is_agreement2: false,
     is_agreement3: false,
+    store_name: '',
   });
   const navigate = useNavigate();
 
@@ -66,6 +67,13 @@ const SignUp = () => {
         label="Name"
         name="name"
         value={formData.name}
+        onChange={handleChange}
+        required
+      />
+      <TextField
+        label="Store Name"
+        name="store_name"
+        value={formData.store_name}
         onChange={handleChange}
         required
       />
