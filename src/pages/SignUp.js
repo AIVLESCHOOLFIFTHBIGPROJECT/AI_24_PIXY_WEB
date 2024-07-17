@@ -72,7 +72,7 @@ const SignUp = () => {
       />
       <TextField
         label="Store Name"
-        name="storename"
+        name="store_name"
         value={formData.store_name}
         onChange={handleChange}
         required
