@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Checkbox, FormControlLabel, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import api from '../api'; // api.js를 import합니다
-import logo from '../assets/logo.png'; // 로고 이미지 경로를 수정하세요
+import logo from '../assets/logo.svg'; // 로고 이미지 경로를 수정하세요
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
