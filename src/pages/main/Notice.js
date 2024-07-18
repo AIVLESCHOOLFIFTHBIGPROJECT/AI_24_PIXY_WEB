@@ -6,8 +6,10 @@ const Notice = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(3); // 기본 페이지 크기 설정
+    const [pageSize, setPageSize] = useState(10); // 기본 페이지 크기 설정
     const [totalPages, setTotalPages] = useState(1);
+    const [totalNotices, setTotalNotices] = useState(0); // 총 공지사항 수
+    const [expandedNoticeId, setExpandedNoticeId] = useState(null);
 
     useEffect(() => {
         fetchNotices();
@@ -17,10 +19,11 @@ const Notice = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/notice/?page=${page}&size=${pageSize}`);
+            const response = await fetch(`https://api.pixy.kro.kr/api/notice/?page=${page}&size=${pageSize}`);
             const data = await response.json();
             setNotices(data.results);
             setTotalPages(Math.ceil(data.count / pageSize));
+            setTotalNotices(data.count); // 총 공지사항 수 설정
         } catch (err) {
             setError(err.message);
         } finally {
@@ -37,27 +40,57 @@ const Notice = () => {
         setPage(1); // 페이지 크기가 변경되면 첫 페이지로 이동
     };
 
+    const toggleNoticeContent = (id) => {
+        if (expandedNoticeId === id) {
+            setExpandedNoticeId(null);
+        } else {
+            setExpandedNoticeId(id);
+        }
+    };
+
+    const calculateItemNumber = (index) => {
+        const calculatedNumber = totalNotices - ((page - 1) * pageSize + index);
+        // 마지막 데이터에 해당하면 번호를 1로 설정
+        if (index === notices.length - 1 && page === totalPages) {
+            return 1;
+        }
+        return calculatedNumber;
+    };
+
+    const formatDate = (dateString) => {
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        };
+        return new Date(dateString).toLocaleDateString('ko-KR', options).replace(/\. /g, '-').replace('. ', ' ').replace('. ', ':');
+    };
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-        <h1>Notices</h1>
+        <h1>공지사항</h1>
         <table className="notice-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Content</th>
-                </tr>
-            </thead>
+            
             <tbody>
-                {notices.map(notice => (
-                    <tr key={notice.id}>
-                        <td>{notice.id}</td>
-                        <td>{notice.title}</td>
-                        <td>{notice.content}</td>
-                    </tr>
+                {notices.map((notice, index) => (
+                    <React.Fragment key={notice.id}>
+                        <tr>
+                            <td>{calculateItemNumber(index)}</td>
+                            <td onClick={() => toggleNoticeContent(notice.id)} style={{ cursor: 'pointer' }}>{notice.title}</td>
+                            <td>{formatDate(notice.updated_at)}</td>
+                        </tr>
+                        {expandedNoticeId === notice.id && (
+                            <tr>
+                                <td colSpan="2">{notice.content}</td>
+                            </tr>
+                        )}
+                    </React.Fragment>
                 ))}
             </tbody>
         </table>
