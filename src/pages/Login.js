@@ -25,7 +25,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await api.post('/api/user/login/normal/', formData);
-      const { access_token, refresh, user_id, user_name } = response.data;
+      const { access_token, refresh, user_id, name } = response.data;
       //console.log(response);
       // 토큰을 쿠키에 저장
       //Cookies.set('access_token', access, { secure: true });
@@ -33,7 +33,7 @@ const Login = () => {
       localStorage.setItem('access_token', access_token);
 
       // 사용자 정보를 Context와 세션 스토리지에 저장
-      const userData = { user_id, user_name };
+      const userData = { user_id, name };
       login(userData);
 
       alert('로그인 성공');

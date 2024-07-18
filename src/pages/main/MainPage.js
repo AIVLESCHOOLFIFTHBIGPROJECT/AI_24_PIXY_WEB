@@ -3,6 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import MainHeader from '../../components/main/MainHeader';
 import MainMenuBar from '../../components/main/MainMenuBar';
 import MainFooter from '../../components/main/MainFooter';
+import Footer from '../../components/Footer';
 import Dashboard from './Dashboard';
 import PixyCustom from './PixyCustom';
 import Sales from './Sales';
@@ -33,7 +34,8 @@ const MainPage = () => {
             <Route path="notifications" element={<Notifications />} />
             <Route path="/" element={<Navigate to="dashboard" />} />
           </Routes>
-          <MainFooter />
+          <Footer />
+          {/* <MainFooter /> */}
         </Box>
       </Box>
     </Box>
