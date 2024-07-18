@@ -43,7 +43,7 @@ const PixyCustom = () => {
     setChatHistory((prevHistory) => [...prevHistory, { type: 'question', content: question }]);
     
     // Replace with your OpenAI API key from environment variables
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
