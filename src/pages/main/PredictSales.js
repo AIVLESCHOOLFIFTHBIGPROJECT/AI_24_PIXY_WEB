@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 
 const PredictSales = () => {
@@ -33,11 +32,11 @@ const PredictSales = () => {
             setUploadError(null);
 
             //POST 요청
-            // await axios.post('https://api.pixy.kro.kr/api/store/predict/', formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data'
-            //     }
-            // });
+            await axios.post('https://api.pixy.kro.kr/api/store/predict/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
 
             // StoreUploadList POST 요청 성공 후 ProductList GET 요청
             const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/sales/');
