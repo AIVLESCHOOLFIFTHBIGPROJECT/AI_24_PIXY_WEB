@@ -32,8 +32,8 @@ const Sales = () => {
             setLoading(true);
             setUploadError(null);
 
-            // StoreUploadList에 POST 요청
-            // await axios.post('https://api.pixy.kro.kr/api/post/storeupload/', formData, {
+            // POST 요청
+            // await axios.post('https://api.pixy.kro.kr/api/store/stores/', formData, {
             //     headers: {
             //         'Content-Type': 'multipart/form-data'
             //     }
