@@ -66,8 +66,8 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={lineChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <XAxis dataKey="name" scale="point" padding={{ left: 10, right: 10 }} />
+                <YAxis scale="linear" domain={['auto', 'auto']} />
                 <Tooltip />
                 <Line type="monotone" dataKey="당월" stroke="#8884d8" />
                 <Line type="monotone" dataKey="전월" stroke="#82ca9d" />
