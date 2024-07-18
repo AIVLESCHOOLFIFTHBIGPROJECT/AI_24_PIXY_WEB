@@ -6,6 +6,8 @@ import HomePage from './pages/HomePage';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import MainPage from './pages/main/MainPage';
+import PixyCustom from './pages/main/PixyCustom';
+import Inquiry from './pages/main/Inquiry';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path="/signup" element={<SignUp />}/>
           <Route path="/login" element={<Login />}/>
           <Route path="/main/*" element={<MainPage />}/>
+          <Route path="/pixycustom" element={<PixyCustom />}/>
+          <Route path="/inquiry" element={<Inquiry />}/>
           {/* 다른 라우트들 */}
         </Routes>
       </Router>
