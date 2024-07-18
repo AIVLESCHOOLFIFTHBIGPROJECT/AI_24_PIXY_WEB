@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: process.env.REACT_APP_API_URL,
   withCredentials: true,  // 쿠키를 포함한 요청을 보냅니다
 });
 
@@ -37,7 +37,7 @@ api.interceptors.response.use(
         const refreshToken = Cookies.get('refresh_token');
         if (!refreshToken) throw new Error('No refresh token');
 
-        const { data } = await axios.post(`${process.env.API_URL}/api/user/api/token/refresh/`, {
+        const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/user/api/token/refresh/`, {
           refresh: refreshToken,
         }, { withCredentials: true });
 
