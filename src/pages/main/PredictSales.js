@@ -32,7 +32,7 @@ const PredictSales = () => {
             setLoading(true);
             setUploadError(null);
 
-            // StoreUploadList에 POST 요청
+            //POST 요청
             // await axios.post('https://api.pixy.kro.kr/api/store/predict/', formData, {
             //     headers: {
             //         'Content-Type': 'multipart/form-data'
