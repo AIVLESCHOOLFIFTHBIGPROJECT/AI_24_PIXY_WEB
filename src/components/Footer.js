@@ -22,7 +22,7 @@ const Footer = () => {
           이메일: csc4952@pixy.co.kr | 연락처: 010-3548-6683
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          사업자 등록번호: 000-00-00000 | 통신판매업 신고: 제0000-대구OO-0000호
+          사업자 등록번호: 123-45-67890 | 통신판매업 신고: 제1234-대구12-1234호
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Copyright © Pixy Inc. All rights reserved.
