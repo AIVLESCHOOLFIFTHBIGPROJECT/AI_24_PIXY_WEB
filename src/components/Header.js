@@ -16,7 +16,7 @@ const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       const position = window.scrollY;
-      const heroSectionHeight = document.getElementById('hero-section')?.offsetHeight || 0;
+      const heroSectionHeight = document.getElementById('banner-section')?.offsetHeight || 0;
       setIsTop(position < heroSectionHeight - 100);
     };
 

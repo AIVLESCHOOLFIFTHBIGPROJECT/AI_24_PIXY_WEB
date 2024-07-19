@@ -7,6 +7,8 @@ import PrivateRoute from './components/PrivateRoute';
 import HomePage from './pages/HomePage';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
+import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
 import MainPage from './pages/main/MainPage';
 import PixyCustom from './pages/main/PixyCustom';
 import Inquiry from './pages/main/Inquiry';
@@ -20,6 +22,8 @@ function App() {
       <AuthProvider>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />}/>
             <Route path="/signup" element={<SignUp />}/>
             <Route path="/login" element={<Login />}/>
             <Route path="/main/*" element={<PrivateRoute><MainPage /></PrivateRoute>}/>
