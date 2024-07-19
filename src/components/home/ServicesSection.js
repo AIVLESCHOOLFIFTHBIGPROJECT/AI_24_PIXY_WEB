@@ -79,7 +79,7 @@ const ServicesSection = () => {
               // lineHeight: { xs: 1.5, md: '30px' },
             }}
           >
-            지원할 비즈니스 모델/매장의 특성을 이해고 있습니다.
+            지원할 비즈니스 모델/매장의 특성을 이해하고 있습니다.
           </Typography>
           <Typography 
             variant="body1" 
