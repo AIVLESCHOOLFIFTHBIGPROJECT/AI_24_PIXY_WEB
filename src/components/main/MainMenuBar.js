@@ -51,6 +51,10 @@ const MainMenuBar = () => {
             <ListItemIcon><CctvIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
             <ListItemText primary="CCTV" />
           </ListItem>
+          <ListItem button component={Link} to="/main/cctvfire">
+            <ListItemIcon><CctvIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
+            <ListItemText primary="CCTV-Fire" />
+          </ListItem>
           <ListItem button component={Link} to="/main/inquiry">
             <ListItemIcon><InquiryIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
             <ListItemText primary="문의 게시판" />
