@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, CardMedia } from '@mui/material';
+import { Box, Typography, Card, CardContent, CardMedia, Grid } from '@mui/material';
 import cscImg from '../../assets/people/cscImg.png';
 import rjhImg from '../../assets/people/rjhImg.png';
 import hsyImg from '../../assets/people/hsyImg.png';
@@ -67,16 +67,7 @@ const TeamSection = () => {
         }}>
         Our Team
       </Typography>
-      <Box sx={{ 
-        display: 'flex', 
-        flexWrap: { xs: 'wrap', lg: 'nowrap' }, 
-        justifyContent: 'center', 
-        gap: 4,
-        maxWidth: '1240px',
-        margin: '0 auto',
-        flexDirection: { xs: 'column', sm: 'row' },
-        alignItems: 'center'
-      }}>
+      <Grid container spacing={4} justifyContent="center">
         {[
           { title: "CEO_최성찬", image: cscImg, description: "경력1 \n 경력2 \n 경력3" },
           { title: "역할_노재훈", image: rjhImg, description: "경력1 \n 경력2 \n 경력3" },
@@ -88,15 +79,15 @@ const TeamSection = () => {
           { title: "역할_신민철", image: smcImg, description: "경력1 \n 경력2 \n 경력3" },
           { title: "역할_박유빈", image: pypImg, description: "경력1 \n 경력2 \n 경력3" },
         ].map((item, index) => (
-          <Box key={index}>
+          <Grid item xs={12} sm={6} md={4} key={index}>
             <FeatureCard
               title={item.title}
               image={item.image}
               description={item.description}
             />
-          </Box>
+          </Grid>
         ))}
-      </Box>
+      </Grid>
     </Box>
   );
 };
