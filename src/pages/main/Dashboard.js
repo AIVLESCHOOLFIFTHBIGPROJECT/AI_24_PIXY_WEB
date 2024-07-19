@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Grid, Typography, Paper, LinearProgress, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,Legend, Label } from 'recharts';
 import { PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar } from 'recharts';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
@@ -9,19 +10,29 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 const Dashboard = () => {
   // 차트 데이터 (예시)
+  const barCharData = [
+    { day: '12', value: 400 },
+    { day: '13', value: 600 },
+    { day: '14', value: 500 },
+    { day: '15', value: 700 },
+    { day: '16', value: 1000 },
+    { day: '17', value: 1100 },
+    { day: '18', value: 1200 },
+  ];
+
   const lineChartData = [
-    { name: '1', 당월: 300, 전월: 400 },
-    { name: '2', 당월: 500, 전월: 300 },
-    { name: '3', 당월: 800, 전월: 500 },
-    { name: '4', 당월: 400, 전월: 700 },
-    { name: '5', 당월: 500, 전월: 900 },
-    { name: '6', 당월: 300, 전월: 400 },
-    { name: '7', 당월: 500, 전월: 300 },
-    { name: '8', 당월: 800, 전월: 400 },
-    { name: '9', 당월: 400, 전월: 700 },
-    { name: '10', 당월: 300, 전월: 400 },
-    { name: '11', 당월: 300, 전월: 400 },
-    { name: '12', 당월: 500, 전월: 100 },
+    { name: '1월', 당월: 300, 전월: 400 },
+    { name: '2월', 당월: 500, 전월: 300 },
+    { name: '3월', 당월: 800, 전월: 500 },
+    { name: '4월', 당월: 400, 전월: 700 },
+    { name: '5월', 당월: 500, 전월: 900 },
+    { name: '6월', 당월: 300, 전월: 400 },
+    { name: '7월', 당월: 500, 전월: 300 },
+    { name: '8월', 당월: 800, 전월: 400 },
+    { name: '9월', 당월: 400, 전월: 700 },
+    { name: '10월', 당월: 300, 전월: 400 },
+    { name: '11월', 당월: 300, 전월: 400 },
+    { name: '12월', 당월: 500, 전월: 100 },
   ];
 
   const achieve_pieChartData = [
@@ -60,6 +71,16 @@ const Dashboard = () => {
     );
   };
 
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div style={{ background: '#333', color: '#fff', padding: '5px', borderRadius: '5px' }}>
+          <p>{`${payload[0].value}원`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -115,11 +136,27 @@ const Dashboard = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
-            <Typography variant="h6" gutterBottom>저번 7일간 판매</Typography>
-            {/* 여기에 바 차트 구현 */}
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>지난 7일간 판매</Typography>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h4">1,259</Typography>
+              <Typography variant="body2" color="text.secondary">판매 제품수</Typography>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h4">1,000원</Typography>
+              <Typography variant="body2" color="text.secondary">수익</Typography>
+            </Box>
+            <ResponsiveContainer width="100%" height={145}>
+              <BarChart data={barCharData}>
+                <XAxis dataKey="day" axisLine={false} tickLine={false} />
+                <YAxis hide />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="value" fill="#4CAF50" radius={[2, 2, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </Paper>
         </Grid>
+        
       </Grid>
 
       {/* 하단 섹션 */}

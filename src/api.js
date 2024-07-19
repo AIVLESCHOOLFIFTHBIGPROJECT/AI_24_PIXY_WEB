@@ -7,13 +7,13 @@ const api = axios.create({
 });
 
 const logout = () => {
-  localStorage.removeItem('accessToken');
+  sessionStorage.removeItem('accessToken');
  };
 
 // 요청 인터셉터 설정
 api.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = sessionStorage.getItem('access_token');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -41,7 +41,7 @@ api.interceptors.response.use(
           refresh: refreshToken,
         }, { withCredentials: true });
 
-        localStorage.setItem('access_token', data.access, { secure: true });
+        sessionStorage.setItem('access_token', data.access, { secure: true });
         originalRequest.headers.Authorization = `Bearer ${data.access}`;
         return axios(originalRequest);
       } catch (err) {

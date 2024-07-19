@@ -8,11 +8,13 @@ import Dashboard from './Dashboard';
 import PixyCustom from './PixyCustom';
 import Sales from './Sales';
 import CCTV from './CCTV';
+import CCTVFire from './CCTVFire'; 
 import Inquiry from './Inquiry';
 import Notice from './Notice';
 import Settings from './Settings';
 import Notifications from './Notifications';
 import Box from '@mui/material/Box';
+import PredictSales from './PredictSales';
 
 const drawerWidth = 240;
 
@@ -27,7 +29,9 @@ const MainPage = () => {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="pixycustom" element={<PixyCustom />} />
             <Route path="sales" element={<Sales />} />
+            <Route path="predictsales" element={<PredictSales />} />
             <Route path="cctv" element={<CCTV />} />
+            <Route path="cctvfire" element={<CCTVFire />} />
             <Route path="inquiry" element={<Inquiry />} />
             <Route path="notice" element={<Notice />} />
             <Route path="settings" element={<Settings />} />
