@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 // Web Speech API for speech recognition and synthesis
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -38,33 +39,37 @@ const PixyCustom = () => {
     };
   }, [listening]);
 
+  const getCSRFToken = () => {
+    const cookieValue = document.cookie.match('(^|;)\\s*csrftoken\\s*=\\s*([^;]+)')?.pop() || '';
+    return cookieValue;
+  };
+
   const handleQuestion = async (question) => {
     // Add the question to the chat history
     setChatHistory((prevHistory) => [...prevHistory, { type: 'question', content: question }]);
-    
-    // Replace with your OpenAI API key from environment variables
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: question }],
-      }),
-    });
 
-    const data = await response.json();
-    const answer = data.choices[0].message.content;
-    console.log('Answer:', answer);
-    setResponse(answer);
-    
-    // Add the answer to the chat history
-    setChatHistory((prevHistory) => [...prevHistory, { type: 'answer', content: answer }]);
-    
-    speak(answer);
+    try {
+      const csrfToken = getCSRFToken();
+      const response = await axios.post('http://127.0.0.1:8000/api/llm_model/process_text/', JSON.stringify({ text: question }), {
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true
+      });
+      
+      const answer = response.data ? response.data.response : "No response from server";
+      console.log('Answer:', answer);
+      setResponse(answer);
+      
+      // Add the answer to the chat history
+      setChatHistory((prevHistory) => [...prevHistory, { type: 'answer', content: answer }]);
+      
+      speak(answer);
+    } catch (error) {
+      console.error('Error sending text to backend:', error);
+      setResponse("Error sending text to backend");
+    }
   };
 
   const speak = (text) => {
@@ -106,3 +111,4 @@ const PixyCustom = () => {
 };
 
 export default PixyCustom;
+
