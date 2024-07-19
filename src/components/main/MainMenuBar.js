@@ -8,6 +8,8 @@ import { ReactComponent as CctvIcon } from '../../assets/icons/cctv.svg';
 import { ReactComponent as InquiryIcon } from '../../assets/icons/help.svg';
 import { ReactComponent as NoticeIcon } from '../../assets/icons/award.svg';
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg';
+import { ReactComponent as TagIcon } from '../../assets/icons/tag.svg';
+
 
 const drawerWidth = 240;
 
@@ -38,12 +40,20 @@ const MainMenuBar = () => {
             <ListItemText primary="픽시커스텀" />
           </ListItem>
           <ListItem button component={Link} to="/main/sales">
-            <ListItemIcon><SalesIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
+            <ListItemIcon><TagIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
             <ListItemText primary="판매/재고" />
+          </ListItem>
+          <ListItem button component={Link} to="/main/predictsales">
+            <ListItemIcon><SalesIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
+            <ListItemText primary="판매/예측" />
           </ListItem>
           <ListItem button component={Link} to="/main/cctv">
             <ListItemIcon><CctvIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
             <ListItemText primary="CCTV" />
+          </ListItem>
+          <ListItem button component={Link} to="/main/cctvfire">
+            <ListItemIcon><CctvIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
+            <ListItemText primary="CCTV-Fire" />
           </ListItem>
           <ListItem button component={Link} to="/main/inquiry">
             <ListItemIcon><InquiryIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>

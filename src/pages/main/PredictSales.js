@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 
-const Sales = () => {
+const PredictSales = () => {
     const [file, setFile] = useState(null);
     const [products, setProducts] = useState([]);
     const [uploadError, setUploadError] = useState(null);
@@ -32,15 +32,15 @@ const Sales = () => {
             setLoading(true);
             setUploadError(null);
 
-            // POST 요청
-            // await axios.post('https://api.pixy.kro.kr/api/store/stores/', formData, {
+            //POST 요청
+            // await axios.post('https://api.pixy.kro.kr/api/store/predict/', formData, {
             //     headers: {
             //         'Content-Type': 'multipart/form-data'
             //     }
             // });
 
             // StoreUploadList POST 요청 성공 후 ProductList GET 요청
-            const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/product/');
+            const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/sales/');
             setProducts(productResponse.data);
 
         } catch (error) {
@@ -71,7 +71,7 @@ const Sales = () => {
 
     return (
         <div>
-            <h1>Sales Page</h1>
+            <h1>PredictSales Page</h1>
             <input type="file" onChange={handleFileChange} />
             <button onClick={handleUpload} disabled={loading}>
                 {loading ? 'Uploading...' : 'Upload'}
@@ -86,30 +86,32 @@ const Sales = () => {
                 />
             </div>
             <div style={{ height: '100vh' }}>
-                <h1>상품 리스트</h1>
+                <h1>판매량 예측 리스트</h1>
             <div className="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>번호</th>
                             <th>상품 분류</th>
-                            <th>판매량</th>
                             <th>날짜</th>
                             <th></th>
                             <th>재고</th>
+                            <th></th>
+                            <th>판매량(예측)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {currentItems && currentItems.map((product) => {
                             console.log("Product:", product); // 각 product 객체를 콘솔에 출력
                             return (
-                                <tr key={product.p_num}>
-                                    <td>{product.p_num}</td>
+                                <tr key={product.s_num}>
+                                    <td>{product.s_num}</td>
                                     <td>{product.category}</td>
-                                    <td>{product.sales}</td>
                                     <td>{product.date}</td>
                                     <td></td>
                                     <td>{product.stock}</td>
+                                    <td></td>
+                                    <td>{product.sales}</td>
                                 </tr>
                             );
                         })}
@@ -134,4 +136,4 @@ const Sales = () => {
     );
 };
 
-export default Sales;
+export default PredictSales;
