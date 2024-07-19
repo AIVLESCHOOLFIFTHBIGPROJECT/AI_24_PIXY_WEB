@@ -1,7 +1,7 @@
+// PixyCustom.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Web Speech API for speech recognition and synthesis
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
 recognition.lang = 'ko-KR';
@@ -9,34 +9,24 @@ recognition.lang = 'ko-KR';
 const PixyCustom = () => {
   const [listening, setListening] = useState(false);
   const [response, setResponse] = useState('');
-  const [chatHistory, setChatHistory] = useState([]); // For storing the chat history
+  const [chatHistory, setChatHistory] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState('');
+  const [learningStatus, setLearningStatus] = useState('');
 
   useEffect(() => {
-    recognition.onstart = () => {
-      console.log('Voice recognition started. Speak into the microphone.');
-    };
-
+    recognition.onstart = () => console.log('Voice recognition started. Speak into the microphone.');
     recognition.onspeechend = () => {
       console.log('Voice recognition ended.');
       recognition.stop();
       setListening(false);
     };
-
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       console.log('You said: ', transcript);
       handleQuestion(transcript);
     };
-
-    // Start listening
-    if (listening) {
-      recognition.start();
-    }
-
-    // Cleanup function to stop recognition if component unmounts
-    return () => {
-      recognition.stop();
-    };
+    if (listening) recognition.start();
+    return () => recognition.stop();
   }, [listening]);
 
   const getCSRFToken = () => {
@@ -45,26 +35,17 @@ const PixyCustom = () => {
   };
 
   const handleQuestion = async (question) => {
-    // Add the question to the chat history
     setChatHistory((prevHistory) => [...prevHistory, { type: 'question', content: question }]);
-
     try {
       const csrfToken = getCSRFToken();
       const response = await axios.post('http://127.0.0.1:8000/api/llm_model/process_text/', JSON.stringify({ text: question }), {
-        headers: {
-          'X-CSRFToken': csrfToken,
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true
+        headers: { 'X-CSRFToken': csrfToken, 'Content-Type': 'application/json' },
+        withCredentials: true,
       });
-      
       const answer = response.data ? response.data.response : "No response from server";
       console.log('Answer:', answer);
       setResponse(answer);
-      
-      // Add the answer to the chat history
       setChatHistory((prevHistory) => [...prevHistory, { type: 'answer', content: answer }]);
-      
       speak(answer);
     } catch (error) {
       console.error('Error sending text to backend:', error);
@@ -78,8 +59,39 @@ const PixyCustom = () => {
     window.speechSynthesis.speak(utterance);
   };
 
-  const startListening = () => {
-    setListening(true);
+  const startListening = () => setListening(true);
+
+  const handleCSVUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setUploadStatus('File uploading...');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/llm_model/upload_csv/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setUploadStatus(response.data.message);
+    } catch (error) {
+      console.error('Error uploading CSV file:', error);
+      setUploadStatus('Error uploading CSV file');
+    }
+  };
+
+  const startLearning = async () => {
+    try {
+      setLearningStatus('Starting learning process...');
+      const response = await axios.post('http://127.0.0.1:8000/api/llm_model/start_learning/', null, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      setLearningStatus(response.data.message);
+    } catch (error) {
+      console.error('Error starting learning process:', error);
+      setLearningStatus('Error starting learning process');
+    }
   };
 
   return (
@@ -94,21 +106,17 @@ const PixyCustom = () => {
           </div>
         ))}
       </div>
-      <button
-        onClick={startListening}
-        style={{
-          marginTop: '20px',
-          padding: '10px 20px',
-          fontSize: '16px',
-          backgroundColor: listening ? 'blue' : 'initial',
-          color: listening ? 'white' : 'initial'
-        }}
-      >
+      <button onClick={startListening} style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px', backgroundColor: listening ? 'blue' : 'initial', color: listening ? 'white' : 'initial' }}>
         Start Listening
       </button>
+      <input type="file" accept=".csv" onChange={handleCSVUpload} style={{ marginTop: '20px' }} />
+      <p>{uploadStatus}</p>
+      <button onClick={startLearning} style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px' }}>
+        Start Learning
+      </button>
+      <p>{learningStatus}</p>
     </div>
   );
 };
 
 export default PixyCustom;
-
