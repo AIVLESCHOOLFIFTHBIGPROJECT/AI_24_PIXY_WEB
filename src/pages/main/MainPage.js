@@ -8,6 +8,7 @@ import Dashboard from './Dashboard';
 import PixyCustom from './PixyCustom';
 import Sales from './Sales';
 import CCTV from './CCTV';
+import CCTVFire from './CCTVFire'; 
 import Inquiry from './Inquiry';
 import Notice from './Notice';
 import Settings from './Settings';
@@ -30,6 +31,7 @@ const MainPage = () => {
             <Route path="sales" element={<Sales />} />
             <Route path="predictsales" element={<PredictSales />} />
             <Route path="cctv" element={<CCTV />} />
+            <Route path="cctvfire" element={<CCTVFire />} />
             <Route path="inquiry" element={<Inquiry />} />
             <Route path="notice" element={<Notice />} />
             <Route path="settings" element={<Settings />} />

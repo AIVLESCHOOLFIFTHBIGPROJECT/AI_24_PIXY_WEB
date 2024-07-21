@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Grid, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Typography, Grid, TextField, Button, useTheme, useMediaQuery } from '@mui/material';
 import { keyframes } from '@emotion/react';
 
 const moveGradient = keyframes`
@@ -11,14 +11,14 @@ const moveGradient = keyframes`
   }
 `;
 
-const ServicesSection = () => {
+const ContactSection = () => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery('(min-width:1920px)');
 
   return (
     <Box sx={{ bgcolor: 'background.default' }}>
       <Box sx={{ 
-        height: '600px',
+        height: '200px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -40,34 +40,9 @@ const ServicesSection = () => {
             sx={{
               fontWeight: 'bold',
               fontSize: 'clamp(2rem, 3.5vw, 3.25rem)',
-              // lineHeight: { xs: 1.2, md: 1.3, lg: '100px' },
             }}
           >
-            AI 점원 <span style={{ color: '#675AFF' }}>픽시</span>는
-          </Typography>
-          <Typography 
-            variant="h3" 
-            component="h2" 
-            gutterBottom
-            sx={{
-              fontWeight: 'bold',
-              fontSize: 'clamp(2rem, 3.5vw, 3.25rem)',
-              // lineHeight: { xs: 1.2, md: 1.3, lg: '100px' },
-            }}
-          >
-            무인화 Smart Retail 분야의
-          </Typography>
-          <Typography 
-            variant="h3" 
-            component="h2" 
-            gutterBottom
-            sx={{
-              fontWeight: 'bold',
-              fontSize: 'clamp(2rem, 3.5vw, 3.25rem)',
-              // lineHeight: { xs: 1.2, md: 1.3, lg: '100px' },
-            }}
-          >
-            혁신을 선도하는 AI 입니다.
+            Contact Us
           </Typography>
           <Typography 
             variant="body1" 
@@ -76,28 +51,16 @@ const ServicesSection = () => {
               color: 'text.secondary',
               fontWeight: 300,
               fontSize: 'clamp(1rem, 1.5vw, 1.25rem)',
-              // lineHeight: { xs: 1.5, md: '30px' },
             }}
           >
-            지원할 비즈니스 모델/매장의 특성을 이해하고 있습니다.
-          </Typography>
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              color: 'text.secondary',
-              fontWeight: 300,
-              fontSize: 'clamp(1rem, 1.5vw, 1.25rem)',
-              // lineHeight: { xs: 1.5, md: '30px' },
-            }}
-          >
-            비즈니스의 알맞은 매출 성장을 도와 드릴게요.
+            여러분의 소중한 의견을 기다립니다. 아래 양식을 작성해 주세요.
           </Typography>
         </Box>
       </Box>
       
       <Box
         sx={{
-          height: '250px',
+          height: '200px',
           position: 'relative',
           overflow: 'hidden',
           color: 'white',
@@ -113,9 +76,7 @@ const ServicesSection = () => {
             right: 0,
             bottom: 0,
             width: '200%',
-            background: 'linear-gradient(90deg, #675AFF, #5DDFDE, #675AFF)',
-            backgroundSize: '50% 100%',
-            animation: `${moveGradient} 10s linear infinite`,
+            background: '#675AFF',
           }}
         />
         <Grid container spacing={0} sx={{ maxWidth: '1200px', mx: 'auto', position: 'relative', zIndex: 1 }}>
@@ -127,9 +88,9 @@ const ServicesSection = () => {
             justifyContent: 'center',
             height: '100%',
           }}>
-            <Typography variant="body1" align="center">우리 매장 전용 챗봇</Typography>
-            <Typography variant="h5" align="center" sx={{ mt: 1, fontWeight: 'bold' }}>
-              Custom Pixy
+            <Typography variant="h5" align="center" sx={{ mt: 1, fontWeight: 'bold' }}>Email Us</Typography>
+            <Typography variant="body1" align="center" sx={{ mt: 1}}>
+              csc4952@pixy.kro.kr
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} sx={{ 
@@ -140,9 +101,9 @@ const ServicesSection = () => {
             justifyContent: 'center',
             height: '100%',
           }}>
-            <Typography variant="body1" align="center">최적의 발주 관리</Typography>
-            <Typography variant="h5" align="center" sx={{ mt: 1, fontWeight: 'bold' }}>
-              AI Manager
+            <Typography variant="h5" align="center" sx={{ mt: 1, fontWeight: 'bold' }}>Call Us</Typography>
+            <Typography variant="body1" align="center" sx={{ mt: 1}}>
+              010-3548-6683
             </Typography>
           </Grid>
           <Grid item xs={12} md={4} sx={{ 
@@ -151,15 +112,61 @@ const ServicesSection = () => {
             justifyContent: 'center',
             height: '100%',
           }}>
-            <Typography variant="body1" align="center">CCTV 실시간 분석</Typography>
-            <Typography variant="h5" align="center" sx={{ mt: 1, fontWeight: 'bold' }}>
-              CCTV Check
+            <Typography variant="h5" align="center" sx={{ mt: 1, fontWeight: 'bold' }}>Visit Us</Typography>
+            <Typography variant="body1" align="center" sx={{ mt: 1}}>
+              대구광역시 북구 고성로 141, KT 북대구 빌딩
             </Typography>
           </Grid>
         </Grid>
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+        <Box sx={{ maxWidth: 800, width: '100%' }}>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Name"
+                variant="outlined"
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Email"
+                variant="outlined"
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Subject"
+                variant="outlined"
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Message"
+                variant="outlined"
+                margin="normal"
+                multiline
+                rows={4}
+              />
+            </Grid>
+            <Grid item xs={12} sx={{ textAlign: 'center' }}>
+              <Button variant="contained" color="primary" size="large">
+                제출하기
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
       </Box>
     </Box>
   );
 };
 
-export default ServicesSection; 
+export default ContactSection;

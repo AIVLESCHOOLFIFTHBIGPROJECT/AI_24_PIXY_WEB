@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 // Web Speech API for speech recognition and synthesis
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -37,6 +38,11 @@ const PixyCustom = () => {
       recognition.stop();
     };
   }, [listening]);
+
+  const getCSRFToken = () => {
+    const cookieValue = document.cookie.match('(^|;)\\s*csrftoken\\s*=\\s*([^;]+)')?.pop() || '';
+    return cookieValue;
+  };
 
   const handleQuestion = async (question) => {
   setChatHistory((prevHistory) => [...prevHistory, { type: 'question', content: question }]);
@@ -99,3 +105,4 @@ const PixyCustom = () => {
 };
 
 export default PixyCustom;
+
