@@ -16,7 +16,7 @@ const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       const position = window.scrollY;
-      const heroSectionHeight = document.getElementById('hero-section')?.offsetHeight || 0;
+      const heroSectionHeight = document.getElementById('banner-section')?.offsetHeight || 0;
       setIsTop(position < heroSectionHeight - 100);
     };
 
@@ -64,7 +64,7 @@ const Header = () => {
 
           {!isSmallScreen && (
             <Box sx={{ display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
-              <Button color="inherit" component={Link} to="/" sx={buttonStyle}>제품 소개</Button>
+              <Button color="inherit" component={Link} to="/product" sx={buttonStyle}>제품 소개</Button>
               <Button color="inherit" component={Link} to="/about" sx={buttonStyle}>회사 소개</Button>
               <Button color="inherit" component={Link} to="/contact" sx={buttonStyle}>고객 문의</Button>
             </Box>
@@ -104,7 +104,7 @@ const Header = () => {
                     horizontal: 'right',
                   }}
                 >
-                  <MenuItem onClick={handleClose} component={Link} to="/">제품 소개</MenuItem>
+                  <MenuItem onClick={handleClose} component={Link} to="/product">제품 소개</MenuItem>
                   <MenuItem onClick={handleClose} component={Link} to="/about">회사 소개</MenuItem>
                   <MenuItem onClick={handleClose} component={Link} to="/contact">고객 문의</MenuItem>
                 </Menu>
