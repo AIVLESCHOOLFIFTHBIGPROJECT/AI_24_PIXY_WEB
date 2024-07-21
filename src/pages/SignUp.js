@@ -179,7 +179,7 @@ const SignUp = () => {
 
   const handleSendCode = async () => {
     try {
-      await api.post('/api/user/send-code/nonuser', { email: formData.email });
+      await api.post('/api/user/send-code/nonuser/', { email: formData.email });
       setIsCodeSent(true);
       alert('인증 코드가 전송되었습니다.');
     } catch (error) {
