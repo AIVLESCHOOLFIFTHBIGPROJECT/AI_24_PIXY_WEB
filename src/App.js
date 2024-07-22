@@ -20,7 +20,7 @@ function App() {
       <CssBaseline />
       <Router>
 
-      <AuthProvider>
+      {/* <AuthProvider> */}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/product" element={<ProductPage />} />
@@ -28,12 +28,13 @@ function App() {
             <Route path="/contact" element={<ContactPage />}/>
             <Route path="/signup" element={<SignUp />}/>
             <Route path="/login" element={<Login />}/>
-            <Route path="/main/*" element={<PrivateRoute><MainPage /></PrivateRoute>}/>
+            {/* <Route path="/main/*" element={<PrivateRoute><MainPage /></PrivateRoute>}/> */}
+            <Route path="/main/*" element={<MainPage />}/>
             <Route path="/pixycustom" element={<PixyCustom />}/>
             <Route path="/inquiry" element={<Inquiry />}/>
             {/* 다른 라우트들 */}
           </Routes>
-        </AuthProvider>
+        {/* </AuthProvider> */}
       </Router>
     </ThemeProvider>
   );

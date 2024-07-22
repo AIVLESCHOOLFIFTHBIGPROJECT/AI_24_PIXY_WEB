@@ -28,6 +28,8 @@ const PredictSales = () => {
         const formData = new FormData();
         formData.append('uploaded_file', file);
 
+        const accessToken = sessionStorage.getItem('access_token');
+
         try {
             setLoading(true);
             setUploadError(null);
@@ -40,7 +42,11 @@ const PredictSales = () => {
             // });
 
             // StoreUploadList POST 요청 성공 후 ProductList GET 요청
-            const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/sales/');
+            const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/sales/', {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}` // Authorization 헤더에 토큰 포함
+                }
+            });
             setProducts(productResponse.data);
 
         } catch (error) {

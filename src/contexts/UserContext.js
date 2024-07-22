@@ -19,13 +19,13 @@ export const UserProvider = ({ children }) => {
     sessionStorage.removeItem('user');
   };
 
-  // 애플리케이션이 로드될 때 사용자 정보를 로드
-  useEffect(() => {
-    const storedUser = sessionStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  // // 애플리케이션이 로드될 때 사용자 정보를 로드
+  // useEffect(() => {
+  //   const storedUser = sessionStorage.getItem('user');
+  //   if (storedUser) {
+  //     setUser(JSON.parse(storedUser));
+  //   }
+  // }, []);
 
   return (
     <UserContext.Provider value={{ user, login, logout }}>
