@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Checkbox, FormControlLabel, Box, Typography } from '@mui/material';
-import { useNavigate, Link } from 'react-router-dom';
+import { TextField, Button, Checkbox, FormControlLabel, Box, Typography, Link } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import api from '../api'; // api.js를 import합니다
 import logo from '../assets/logo.svg'; // 로고 이미지 경로를 수정하세요
 import ProtectedRoute from '../components/ProtectedRoute';
+import PrivacyPolicyDialog from '../components/terms/PrivacyPolicyDialog';
+import UseTermsDialog from '../components/terms/UseTermsDialog';
+import MarketingUtilizationDialog from '../components/terms/MarketingUtilizationDialog';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +28,37 @@ const SignUp = () => {
   const [step, setStep] = useState(0);
   const [isVerified, setIsVerified] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isPhoneNumberVerified, setIsPhoneNumberVerified] = useState(false);
+  const [isPhoneNumberCheckSent, setIsPhoneNumberCheckSent] = useState(false);
   const navigate = useNavigate();
+
+  const [openPrivacyPolicy, setOpenPrivacyPolicy] = useState(false);
+  const [openUseTerms, setOpenUseTerms] = useState(false);
+  const [openMarketingUtilization, setOpenMarketingUtilization] = useState(false);
+
+  const handleOpenPrivacyPolicy = () => {
+    setOpenPrivacyPolicy(true);
+  };
+
+  const handleClosePrivacyPolicy = () => {
+    setOpenPrivacyPolicy(false);
+  };
+
+  const handleOpenUseTerms = () => {
+    setOpenUseTerms(true);
+  };
+
+  const handleCloseUseTerms = () => {
+    setOpenUseTerms(false);
+  };
+
+  const handleOpenMarketingUtilization = () => {
+    setOpenMarketingUtilization(true);
+  };
+
+  const handleCloseMarketingUtilization = () => {
+    setOpenMarketingUtilization(false);
+  };
 
   useEffect(() => {
     if (formData.is_agreement1 && formData.is_agreement2) {
@@ -112,10 +145,10 @@ const SignUp = () => {
         }
         break;
       case 'password':
-        if (value.length < 8) {
-          error = '비밀번호는 최소 8자리 이상이어야 합니다.';
-        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-          error = '특수문자가 하나 이상 포함되어야 합니다.';
+        if (value.length < 8 || value.length > 16) {
+          error = '비밀번호는 8~16자리이어야 합니다.';
+        } else if (!/(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])/.test(value)) {
+          error = '비밀번호는 영문자, 숫자, 특수문자가 하나 이상 포함되어야 합니다.';
         }
         break;
       case 'confirm_password':
@@ -132,6 +165,7 @@ const SignUp = () => {
         if (!/^010-\d{4}-\d{4}$/.test(value)) {
           error = '유효한 전화번호를 입력하세요.';
         }
+        setIsPhoneNumberCheckSent(false); // 전화번호가 변경되면 중복확인 상태를 초기화
         break;
       case 'r_num':
         if (!/^\d{3}-\d{2}-\d{5}$/.test(value)) {
@@ -151,6 +185,20 @@ const SignUp = () => {
       ...prevErrors,
       [name]: error,
     }));
+  };
+
+  const checkPhoneNumber = async () => {
+    try {
+      await api.post('/api/user/duplicate_phonenumber/normal/', { p_num: formData.p_num });
+      setIsPhoneNumberVerified(true);
+      setIsPhoneNumberCheckSent(true); // 중복확인 버튼이 눌려졌음을 표시
+      alert('전화번호 확인 완료');
+    } catch (error) {
+      console.error('전화번호 중복 확인 실패:', error);
+      setIsPhoneNumberVerified(false);
+      setIsPhoneNumberCheckSent(false);
+      alert('전화번호가 중복되었습니다.');
+    }
   };
 
   const formatPhoneNumber = (value) => {
@@ -200,6 +248,17 @@ const SignUp = () => {
   };
 
   const isNextDisabled = () => {
+    // console.log('Validation Check:', {
+    //   email: formData.email,
+    //   password: formData.password,
+    //   confirm_password: formData.confirm_password,
+    //   name: formData.name,
+    //   p_num: formData.p_num,
+    //   errors,
+    //   isVerified,
+    //   isPhoneNumberVerified
+    // });
+
     if (step === 0) {
       return !(formData.is_agreement1 && formData.is_agreement2);
     } else if (step === 1) {
@@ -214,7 +273,8 @@ const SignUp = () => {
         errors.confirm_password ||
         errors.name ||
         errors.p_num ||
-        !isVerified
+        !isVerified ||
+        !isPhoneNumberVerified
       );
     } else if (step === 2) {
       return (
@@ -271,7 +331,11 @@ const SignUp = () => {
                         name="is_agreement1"
                       />
                     }
-                    label="[필수] 개인정보수집동의"
+                    label={
+                      <>
+                        [필수] 개인정보수집동의 <Button variant="text" onClick={handleOpenPrivacyPolicy}>보기</Button>
+                      </>
+                    }
                   />
                   <FormControlLabel
                     control={
@@ -281,7 +345,11 @@ const SignUp = () => {
                         name="is_agreement2"
                       />
                     }
-                    label="[필수] 이용약관동의"
+                    label={
+                      <>
+                        [필수] 이용약관동의 <Button variant="text" onClick={handleOpenUseTerms}>보기</Button>
+                      </>
+                    }
                   />
                   <FormControlLabel
                     control={
@@ -291,7 +359,11 @@ const SignUp = () => {
                         name="is_agreement3"
                       />
                     }
-                    label="[선택] 마케팅활용동의"
+                    label={
+                      <>
+                        [선택] 마케팅활용동의 <Button variant="text" onClick={handleOpenMarketingUtilization}>보기</Button>
+                      </>
+                    }
                   />
                 </Box>
               )}
@@ -364,6 +436,9 @@ const SignUp = () => {
                     error={!!errors.p_num}
                     helperText={errors.p_num}
                   />
+                  <Button variant="outlined" onClick={checkPhoneNumber} disabled={isPhoneNumberCheckSent}>
+                    중복 확인
+                  </Button>
                 </Box>
               )}
               {step === 2 && (
@@ -427,6 +502,9 @@ const SignUp = () => {
           </Box>
         </Box>
       </Box>
+      <PrivacyPolicyDialog open={openPrivacyPolicy} onClose={handleClosePrivacyPolicy} />
+      <UseTermsDialog open={openUseTerms} onClose={handleCloseUseTerms} />
+      <MarketingUtilizationDialog open={openMarketingUtilization} onClose={handleCloseMarketingUtilization} />
     </ProtectedRoute>
   );
 };

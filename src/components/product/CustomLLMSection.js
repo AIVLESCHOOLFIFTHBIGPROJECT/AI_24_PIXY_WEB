@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, Typography, Grid, useMediaQuery } from '@mui/material';
-import cctvImg from '../../assets/home_sample3.png';
+import { Box, Typography, Grid, useTheme, useMediaQuery } from '@mui/material';
+import customLLMImg from '../../assets/home_sample1.png';
 
-const CCTVSection = () => {
+const CustomLLMSection = () => {
     const isLargeScreen = useMediaQuery('(min-width:1920px)');
   return (
     <Box sx={{ 
@@ -20,17 +20,17 @@ const CCTVSection = () => {
         } }}>
       <Grid container spacing={4} alignItems="center">
         <Grid item xs={12} md={6}>
-          <img src={cctvImg} alt="CCTV" style={{ width: '100%', height: 'auto' }} />
+          <img src={customLLMImg} alt="Custom LLM" style={{ width: '100%', height: 'auto' }} />
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="h4" component="h2" gutterBottom>
-            CCTV Section
+            Custom LLM Section
           </Typography>
           <Typography variant="body1" paragraph>
-            - 이상행동 분류 모델을 통해 매장 내 이상행동 탐지
+            - 각 매장별로 챗봇을 학습 및 커스텀하여 매장 전용 챗봇 구성
           </Typography>
           <Typography variant="body1" paragraph>
-            - 화재 감지를 통한 매장안전 강화
+            - STT, TTS를 활용한 음성 대화 지원
           </Typography>
         </Grid>
       </Grid>
@@ -38,4 +38,4 @@ const CCTVSection = () => {
   );
 };
 
-export default CCTVSection;
+export default CustomLLMSection;
