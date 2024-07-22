@@ -17,6 +17,7 @@ export const UserProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem('user');
+    sessionStorage.removeItem('access_token');
   };
 
   // // 애플리케이션이 로드될 때 사용자 정보를 로드

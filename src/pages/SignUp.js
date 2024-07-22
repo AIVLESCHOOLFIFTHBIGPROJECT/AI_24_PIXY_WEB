@@ -238,7 +238,7 @@ const SignUp = () => {
 
   const handleVerifyCode = async () => {
     try {
-      await api.post('/api/user/verify-code/', { email: formData.email, code: formData.verification_code });
+      await api.post('/api/user/nonuser_verify/', { email: formData.email, code: formData.verification_code });
       setIsVerified(true);
       alert('인증 성공');
     } catch (error) {
@@ -289,7 +289,8 @@ const SignUp = () => {
   };
 
   return (
-    <ProtectedRoute>
+    // <ProtectedRoute>
+    <>
       <Box sx={{ backgroundColor: '#f5f5f5'}}>
         <Box sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', height: '10vh'}}>
           <Link to="/">
@@ -505,7 +506,8 @@ const SignUp = () => {
       <PrivacyPolicyDialog open={openPrivacyPolicy} onClose={handleClosePrivacyPolicy} />
       <UseTermsDialog open={openUseTerms} onClose={handleCloseUseTerms} />
       <MarketingUtilizationDialog open={openMarketingUtilization} onClose={handleCloseMarketingUtilization} />
-    </ProtectedRoute>
+    {/* </ProtectedRoute> */}
+    </>
   );
 };
 

@@ -14,6 +14,7 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [businessRImageUrl, setBusinessRImageUrl] = useState(null);
   const [openDialog, setOpenDialog] = useState(false); // Dialog 상태 추가
   const navigate = useNavigate();
   const { logout } = useUser(); // 로그아웃 함수를 Context에서 가져옵니다
@@ -22,7 +23,10 @@ const Settings = () => {
     const fetchUserInfo = async () => {
       try {
         const response = await api.get('/api/user/profile/normal/');
-        setUserInfo(response.data);
+        setUserInfo((prev) => ({
+          ...prev,
+          ...response.data,
+        }));
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch user info');
@@ -31,6 +35,21 @@ const Settings = () => {
     };
 
     fetchUserInfo();
+  }, []);
+
+  useEffect(() => {
+    const fetchBusinessRImage = async () => {
+      try {
+        const response = await api.get('/api/user/image_get/normal/', { responseType: 'blob' });
+        const imageBlob = response.data;
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setBusinessRImageUrl(imageUrl);
+      } catch (err) {
+        setError('Failed to fetch business registration image');
+      }
+    };
+
+    fetchBusinessRImage();
   }, []);
 
   const handleChange = (e) => {
@@ -125,10 +144,10 @@ const Settings = () => {
           required
           inputProps={{ maxLength: 30, minLength: 1 }}
         />
-        {userInfo.business_r && (
+        {businessRImageUrl && (
           <Box>
             <Typography variant="subtitle1">사업자등록증:</Typography>
-            <a href={userInfo.business_r} target="_blank" rel="noopener noreferrer">사업자등록증 보기</a>
+            <a href={businessRImageUrl} target="_blank" rel="noopener noreferrer">사업자등록증 보기</a>
           </Box>
         )}
         <input type="file" onChange={handleFileChange} />
