@@ -20,7 +20,7 @@ function App() {
       <CssBaseline />
       <Router>
 
-      <AuthProvider>
+      {/* <AuthProvider> */}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/product" element={<ProductPage />} />
@@ -34,7 +34,7 @@ function App() {
             <Route path="/inquiry" element={<Inquiry />}/>
             {/* 다른 라우트들 */}
           </Routes>
-        </AuthProvider>
+        {/* </AuthProvider> */}
       </Router>
     </ThemeProvider>
   );
