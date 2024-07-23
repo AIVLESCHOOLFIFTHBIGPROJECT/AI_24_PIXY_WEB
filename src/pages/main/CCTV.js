@@ -14,30 +14,29 @@ const CCTV = () => {
   const [currentVideo, setCurrentVideo] = useState(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
 
-  // const API_URL = 'http://127.0.0.1:8000';
-
   const onDrop = (acceptedFiles) => {
     const formData = new FormData();
     acceptedFiles.forEach((file) => {
-      formData.append('original_video', file); // 서버에서 기대하는 필드 이름으로 수정
+      formData.append('original_video', file);
     });
-
-    // FormData 내용 확인
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
-    api.post(`/api/theft_detection/video/`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  
+    api.post(`/api/theft_detection/video/`, formData)
       .then((response) => {
         console.log('Upload Success:', response.data);
-        fetchVideos(); // 파일 업로드 후 영상 목록 다시 가져오기
+        fetchVideos();
       })
       .catch((error) => {
-        console.log('Upload Error:', error.response ? error.response.data : error.message);
+        console.error('Upload Error:', error.response ? error.response.data : error.message);
+        // 오류 메시지를 더 자세히 로깅
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+          console.error('Error status:', error.response.status);
+          console.error('Error headers:', error.response.headers);
+        } else if (error.request) {
+          console.error('Error request:', error.request);
+        } else {
+          console.error('Error message:', error.message);
+        }
       });
   };
 
