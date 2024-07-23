@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Grid, Typography, Paper, TextField, Button, List, ListItem, ListItemText, Divider, IconButton } from '@mui/material';
+import { Box, Typography, Paper, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Collapse } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Inquiry = () => {
   const [qnas, setQnas] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [newQna, setNewQna] = useState({ title: '', content: '' });
   const [editQna, setEditQna] = useState({ id: null, title: '', content: '' });
-  const [selectedQna, setSelectedQna] = useState(null);
+  const [openAnswerId, setOpenAnswerId] = useState(null);
 
   useEffect(() => {
     fetchQnas();
@@ -93,90 +95,115 @@ const Inquiry = () => {
     }
   };
 
-  const handleQnaClick = (qna) => {
-    if (selectedQna && selectedQna.b_num === qna.b_num) {
-      setSelectedQna(null);
-    } else {
-      setSelectedQna(qna);
-    }
+  const handleQnaClick = (qnaId) => {
+    setOpenAnswerId((prevOpenAnswerId) => (prevOpenAnswerId === qnaId ? null : qnaId));
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditQna({ ...editQna, [field]: value });
+  };
+
+  const handleEditCancel = () => {
+    setEditQna({ id: null, title: '', content: '' });
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3, height: '100vh', overflow: 'auto' }}>
+    <Box sx={{ flexGrow: 1, p: 3 }}>
       <Typography variant="h4" gutterBottom>문의 게시판</Typography>
 
       <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
         <TextField
-          fullWidth
           label="제목"
           value={newQna.title}
           onChange={(e) => setNewQna({ ...newQna, title: e.target.value })}
+          fullWidth
           sx={{ mb: 2 }}
         />
         <TextField
-          fullWidth
           label="내용"
           value={newQna.content}
           onChange={(e) => setNewQna({ ...newQna, content: e.target.value })}
+          fullWidth
           sx={{ mb: 2 }}
         />
-        <Button variant="contained" color="primary" onClick={handleCreateQna}>등록</Button>
+        <Button variant="contained" onClick={handleCreateQna}>등록</Button>
       </Paper>
 
-      <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography variant="h6">목록</Typography>
-        <List>
-          {qnas.map(qna => (
-            <React.Fragment key={qna.b_num}>
-              <ListItem alignItems="flex-start">
-                {editQna.id === qna.b_num ? (
-                  <>
-                    <TextField
-                      fullWidth
-                      value={editQna.title}
-                      onChange={(e) => setEditQna({ ...editQna, title: e.target.value })}
-                      sx={{ mb: 2 }}
-                    />
-                    <TextField
-                      fullWidth
-                      value={editQna.content}
-                      onChange={(e) => setEditQna({ ...editQna, content: e.target.value })}
-                      sx={{ mb: 2 }}
-                    />
-                    <Button variant="contained" color="primary" onClick={() => handleUpdateQna(qna.b_num)} sx={{ mb: 2 }}>
-                      저장
-                    </Button>
-                    <Button onClick={() => setEditQna({ id: null, title: '', content: '' })} sx={{ mb: 2 }}>
-                      취소
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <ListItemText
-                      primary={<Typography variant="h6" onClick={() => handleQnaClick(qna)} sx={{ cursor: 'pointer', color: 'blue' }}>제목: {qna.title}</Typography>}
-                      secondary={<Typography variant="body2">내용: {qna.content}</Typography>}
-                    />
-                    <IconButton edge="end" aria-label="edit" onClick={() => setEditQna({ id: qna.b_num, title: qna.title, content: qna.content })}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteQna(qna.b_num)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                )}
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              {selectedQna && selectedQna.b_num === qna.b_num && (
-                <ListItem>
-                  <ListItemText
-                    primary={<Typography variant="body2" color="textSecondary">답변: {getAnswerForQna(qna.b_num)}</Typography>}
-                  />
-                </ListItem>
-              )}
-            </React.Fragment>
-          ))}
-        </List>
-      </Paper>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>제목</TableCell>
+              <TableCell>내용</TableCell>
+              <TableCell>관리</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {qnas.map((qna) => (
+              <React.Fragment key={qna.b_num}>
+                <TableRow>
+                  <TableCell>
+                    {editQna.id === qna.b_num ? (
+                      <TextField
+                        value={editQna.title}
+                        onChange={(e) => handleEditChange('title', e.target.value)}
+                        fullWidth
+                      />
+                    ) : (
+                      <Typography onClick={() => handleQnaClick(qna.b_num)} sx={{ cursor: 'pointer', color: 'blue' }}>
+                        {qna.title}
+                      </Typography>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editQna.id === qna.b_num ? (
+                      <TextField
+                        value={editQna.content}
+                        onChange={(e) => handleEditChange('content', e.target.value)}
+                        fullWidth
+                      />
+                    ) : (
+                      qna.content
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editQna.id === qna.b_num ? (
+                      <>
+                        <IconButton onClick={() => handleUpdateQna(qna.b_num)}>
+                          <SaveIcon />
+                        </IconButton>
+                        <IconButton onClick={handleEditCancel}>
+                          <CancelIcon />
+                        </IconButton>
+                      </>
+                    ) : (
+                      <>
+                        <IconButton onClick={() => setEditQna({ id: qna.b_num, title: qna.title, content: qna.content })}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteQna(qna.b_num)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={3} sx={{ p: 0 }}>
+                    <Collapse in={openAnswerId === qna.b_num} timeout="auto" unmountOnExit>
+                      <Box sx={{ m: 2 }}>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                          A: {getAnswerForQna(qna.b_num)}
+                        </Typography>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };
