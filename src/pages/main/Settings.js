@@ -16,6 +16,13 @@ const Settings = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [businessRImageUrl, setBusinessRImageUrl] = useState(null);
   const [openDialog, setOpenDialog] = useState(false); // Dialog 상태 추가
+  const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState('');
+  const [resetPasswordStep, setResetPasswordStep] = useState(1);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(false);
+
   const navigate = useNavigate();
   const { logout } = useUser(); // 로그아웃 함수를 Context에서 가져옵니다
 
@@ -106,6 +113,62 @@ const Settings = () => {
     setOpenDialog(false);
   };
 
+  const handleOpenResetPasswordDialog = () => {
+    setOpenResetPasswordDialog(true);
+  };
+
+  const handleCloseResetPasswordDialog = () => {
+    setOpenResetPasswordDialog(false);
+  };
+
+  const handleSendCode = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/api/user/send-code/user/', { email: resetPasswordEmail });
+      setIsCodeSent(true);
+      alert('인증 코드가 전송되었습니다.');
+      setResetPasswordStep(2);
+    } catch (error) {
+      alert('인증 코드 전송 실패');
+      console.error('인증 코드 전송 실패:', error.response.data);
+    }
+  };
+
+  const handleVerifyCode = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post('/api/user/verify-code-settings/', { email: resetPasswordEmail, code: verificationCode });
+      if (response && response.data) {
+        setCodeVerified(true);
+        setResetPasswordStep(3);
+        alert('인증 성공');
+      } else {
+        throw new Error('인증 실패');
+      }
+    } catch (error) {
+      alert('인증 실패');
+      console.error('인증 실패:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    const { password, confirmPassword } = e.target.elements;
+    if (password.value !== confirmPassword.value) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    try {
+      await api.post('/api/user/reset-password/', { email: resetPasswordEmail, new_password: password.value }, {
+      });
+      alert('비밀번호가 성공적으로 변경되었습니다.');
+      setOpenResetPasswordDialog(false);
+    } catch (error) {
+      alert('비밀번호 재설정 실패');
+      console.error('비밀번호 재설정 실패:', error.response.data);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -157,6 +220,9 @@ const Settings = () => {
         <Button variant="outlined" color="secondary" onClick={handleOpenDialog}>
           회원탈퇴하기
         </Button>
+        <Button variant="outlined" color="primary" onClick={handleOpenResetPasswordDialog}>
+          비밀번호 재설정
+        </Button>
       </form>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>회원탈퇴</DialogTitle>
@@ -171,6 +237,58 @@ const Settings = () => {
           </Button>
           <Button onClick={handleDeleteAccount} color="secondary">
             탈퇴
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openResetPasswordDialog} onClose={handleCloseResetPasswordDialog}>
+        <DialogTitle>비밀번호 재설정</DialogTitle>
+        <DialogContent>
+          {resetPasswordStep === 1 && (
+            <Box component="form" onSubmit={handleSendCode} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="이메일"
+                name="email"
+                value={resetPasswordEmail}
+                onChange={(e) => setResetPasswordEmail(e.target.value)}
+                required
+              />
+              <Button type="submit" variant="contained">인증 코드 전송</Button>
+            </Box>
+          )}
+          {resetPasswordStep === 2 && (
+            <Box component="form" onSubmit={handleVerifyCode} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="인증 코드"
+                name="code"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                required
+              />
+              <Button type="submit" variant="contained">인증 코드 확인</Button>
+            </Box>
+          )}
+          {resetPasswordStep === 3 && (
+            <Box component="form" onSubmit={handleResetPassword} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                label="새 비밀번호"
+                name="password"
+                type="password"
+                required
+              />
+              <TextField
+                label="비밀번호 확인"
+                name="confirmPassword"
+                type="password"
+                required
+              />
+              <Button type="submit" variant="contained">비밀번호 재설정</Button>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseResetPasswordDialog} color="primary">
+            닫기
           </Button>
         </DialogActions>
       </Dialog>
