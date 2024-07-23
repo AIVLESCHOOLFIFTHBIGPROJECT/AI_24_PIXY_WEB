@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Modal from 'react-modal';
-import axios from 'axios';
+import api from '../../api'; 
 
 // 모달의 root 요소를 설정합니다.
 Modal.setAppElement('#root');
@@ -14,7 +14,6 @@ const CCTV = () => {
   const [currentVideo, setCurrentVideo] = useState(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
 
-  const API_URL = 'http://127.0.0.1:8000';
 
   const onDrop = (acceptedFiles) => {
     const formData = new FormData();
@@ -27,7 +26,7 @@ const CCTV = () => {
       console.log(pair[0], pair[1]);
     }
 
-    axios.post(`${API_URL}/api/fire_detection/video/`, formData, {
+    api.post(`/api/fire_detection/video/`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -42,7 +41,7 @@ const CCTV = () => {
   };
 
   const fetchVideos = () => {
-    axios.get(`${API_URL}/api/fire_detection/video/list`)
+    api.get(`/api/fire_detection/video/list`)
       .then((response) => {
         console.log('Fetch Videos Success:', response.data);
         const urls = response.data.processed_videos.map((url, index) => ({
