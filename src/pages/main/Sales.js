@@ -34,11 +34,11 @@ const Sales = () => {
             setUploadError(null);
 
             // POST 요청
-            await axios.post('https://api.pixy.kro.kr/api/store/stores/', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            // await axios.post('https://api.pixy.kro.kr/api/store/stores/', formData, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data'
+            //     }
+            // });
 
             // StoreUploadList POST 요청 성공 후 ProductList GET 요청
             const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/product/', {
