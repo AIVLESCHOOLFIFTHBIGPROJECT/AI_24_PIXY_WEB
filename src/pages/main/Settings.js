@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api'; // api.js를 import합니다
+import { useUser } from '../../contexts/UserContext'; // UserContext를 import합니다
 
 const Settings = () => {
   const [userInfo, setUserInfo] = useState({
@@ -12,12 +14,19 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [businessRImageUrl, setBusinessRImageUrl] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false); // Dialog 상태 추가
+  const navigate = useNavigate();
+  const { logout } = useUser(); // 로그아웃 함수를 Context에서 가져옵니다
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const response = await api.get('/api/user/profile/normal/');
-        setUserInfo(response.data);
+        setUserInfo((prev) => ({
+          ...prev,
+          ...response.data,
+        }));
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch user info');
@@ -26,6 +35,21 @@ const Settings = () => {
     };
 
     fetchUserInfo();
+  }, []);
+
+  useEffect(() => {
+    const fetchBusinessRImage = async () => {
+      try {
+        const response = await api.get('/api/user/image_get/normal/', { responseType: 'blob' });
+        const imageBlob = response.data;
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setBusinessRImageUrl(imageUrl);
+      } catch (err) {
+        setError('Failed to fetch business registration image');
+      }
+    };
+
+    fetchBusinessRImage();
   }, []);
 
   const handleChange = (e) => {
@@ -60,6 +84,26 @@ const Settings = () => {
     } catch (err) {
       setError('Failed to update user info');
     }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await api.post('/api/user/delete_user/normal/');
+      alert('회원탈퇴가 완료되었습니다.');
+      logout(); // 사용자 로그아웃 처리
+      sessionStorage.removeItem('access_token'); // 토큰 제거
+      navigate('/', { replace: true }); // 초기 화면으로 리다이렉션
+    } catch (err) {
+      setError('Failed to delete account');
+    }
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   if (loading) {
@@ -100,17 +144,36 @@ const Settings = () => {
           required
           inputProps={{ maxLength: 30, minLength: 1 }}
         />
-        {userInfo.business_r && (
+        {businessRImageUrl && (
           <Box>
             <Typography variant="subtitle1">사업자등록증:</Typography>
-            <a href={userInfo.business_r} target="_blank" rel="noopener noreferrer">사업자등록증 보기</a>
+            <a href={businessRImageUrl} target="_blank" rel="noopener noreferrer">사업자등록증 보기</a>
           </Box>
         )}
         <input type="file" onChange={handleFileChange} />
         <Button type="submit" variant="contained" color="primary">
           수정하기
         </Button>
+        <Button variant="outlined" color="secondary" onClick={handleOpenDialog}>
+          회원탈퇴하기
+        </Button>
       </form>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>회원탈퇴</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            정말 회원탈퇴하시겠습니까?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            취소
+          </Button>
+          <Button onClick={handleDeleteAccount} color="secondary">
+            탈퇴
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
