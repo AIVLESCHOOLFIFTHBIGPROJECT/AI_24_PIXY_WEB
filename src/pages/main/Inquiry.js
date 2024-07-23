@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Box, Typography, Paper, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Collapse } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Inquiry = () => {
   const [qnas, setQnas] = useState([]);
@@ -97,6 +99,14 @@ const Inquiry = () => {
     setOpenAnswerId((prevOpenAnswerId) => (prevOpenAnswerId === qnaId ? null : qnaId));
   };
 
+  const handleEditChange = (field, value) => {
+    setEditQna({ ...editQna, [field]: value });
+  };
+
+  const handleEditCancel = () => {
+    setEditQna({ id: null, title: '', content: '' });
+  };
+
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
       <Typography variant="h4" gutterBottom>문의 게시판</Typography>
@@ -133,20 +143,49 @@ const Inquiry = () => {
               <React.Fragment key={qna.b_num}>
                 <TableRow>
                   <TableCell>
-                    <Typography onClick={() => handleQnaClick(qna.b_num)} sx={{ cursor: 'pointer', color: 'blue' }}>
-                       {qna.title}
-                    </Typography>
+                    {editQna.id === qna.b_num ? (
+                      <TextField
+                        value={editQna.title}
+                        onChange={(e) => handleEditChange('title', e.target.value)}
+                        fullWidth
+                      />
+                    ) : (
+                      <Typography onClick={() => handleQnaClick(qna.b_num)} sx={{ cursor: 'pointer', color: 'blue' }}>
+                        {qna.title}
+                      </Typography>
+                    )}
                   </TableCell>
                   <TableCell>
-                     {qna.content}
+                    {editQna.id === qna.b_num ? (
+                      <TextField
+                        value={editQna.content}
+                        onChange={(e) => handleEditChange('content', e.target.value)}
+                        fullWidth
+                      />
+                    ) : (
+                      qna.content
+                    )}
                   </TableCell>
                   <TableCell>
-                    <IconButton onClick={() => setEditQna({ id: qna.b_num, title: qna.title, content: qna.content })}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteQna(qna.b_num)}>
-                      <DeleteIcon />
-                    </IconButton>
+                    {editQna.id === qna.b_num ? (
+                      <>
+                        <IconButton onClick={() => handleUpdateQna(qna.b_num)}>
+                          <SaveIcon />
+                        </IconButton>
+                        <IconButton onClick={handleEditCancel}>
+                          <CancelIcon />
+                        </IconButton>
+                      </>
+                    ) : (
+                      <>
+                        <IconButton onClick={() => setEditQna({ id: qna.b_num, title: qna.title, content: qna.content })}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteQna(qna.b_num)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    )}
                   </TableCell>
                 </TableRow>
                 <TableRow>
