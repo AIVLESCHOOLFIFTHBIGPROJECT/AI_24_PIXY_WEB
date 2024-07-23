@@ -3,7 +3,6 @@ import { TextField, Button, Checkbox, FormControlLabel, Box, Typography, Link } 
 import { useNavigate } from 'react-router-dom';
 import api from '../api'; // api.js를 import합니다
 import logo from '../assets/logo.svg'; // 로고 이미지 경로를 수정하세요
-import ProtectedRoute from '../components/ProtectedRoute';
 import PrivacyPolicyDialog from '../components/terms/PrivacyPolicyDialog';
 import UseTermsDialog from '../components/terms/UseTermsDialog';
 import MarketingUtilizationDialog from '../components/terms/MarketingUtilizationDialog';
@@ -30,6 +29,7 @@ const SignUp = () => {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isPhoneNumberVerified, setIsPhoneNumberVerified] = useState(false);
   const [isPhoneNumberCheckSent, setIsPhoneNumberCheckSent] = useState(false);
+  const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
 
   const [openPrivacyPolicy, setOpenPrivacyPolicy] = useState(false);
@@ -67,6 +67,15 @@ const SignUp = () => {
       setIsAgreementAll(false);
     }
   }, [formData.is_agreement1, formData.is_agreement2]);
+
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+      return () => clearInterval(countdown);
+    }
+  }, [timer]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -203,7 +212,11 @@ const SignUp = () => {
 
   const formatPhoneNumber = (value) => {
     value = value.replace(/\D/g, '');
-    if (value.length > 10) {
+    // console.log(value.length);
+    if (value.length == 7){
+      value = value.replace(/^(\d{3})(\d{0,4})/, '$1-$2');
+    }
+    else if (value.length > 10) {
       value = value.replace(/^(\d{3})(\d{4})(\d{4}).*/, '$1-$2-$3');
     } else if (value.length > 6) {
       value = value.replace(/^(\d{3})(\d{4})(\d{0,4}).*/, '$1-$2-$3');
@@ -215,7 +228,10 @@ const SignUp = () => {
 
   const formatRegistrationNumber = (value) => {
     value = value.replace(/\D/g, '');
-    if (value.length > 10) {
+    if(value.length == 6){
+      value = value.replace(/^(\d{3})(\d{0,2})/, '$1-$2');
+    }
+    else if (value.length > 10) {
       value = value.replace(/^(\d{3})(\d{2})(\d{5}).*/, '$1-$2-$3');
     } else if (value.length > 5) {
       value =value.replace(/^(\d{3})(\d{2})(\d{0,5}).*/, '$1-$2-$3');
@@ -229,6 +245,7 @@ const SignUp = () => {
     try {
       await api.post('/api/user/send-code/nonuser/', { email: formData.email });
       setIsCodeSent(true);
+      setTimer(10); // 5분 타이머 시작
       alert('인증 코드가 전송되었습니다.');
     } catch (error) {
       console.error('인증 코드 전송 실패:', error);
@@ -248,17 +265,6 @@ const SignUp = () => {
   };
 
   const isNextDisabled = () => {
-    // console.log('Validation Check:', {
-    //   email: formData.email,
-    //   password: formData.password,
-    //   confirm_password: formData.confirm_password,
-    //   name: formData.name,
-    //   p_num: formData.p_num,
-    //   errors,
-    //   isVerified,
-    //   isPhoneNumberVerified
-    // });
-
     if (step === 0) {
       return !(formData.is_agreement1 && formData.is_agreement2);
     } else if (step === 1) {
@@ -289,7 +295,6 @@ const SignUp = () => {
   };
 
   return (
-    // <ProtectedRoute>
     <>
       <Box sx={{ backgroundColor: '#f5f5f5'}}>
         <Box sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', height: '10vh'}}>
@@ -378,20 +383,24 @@ const SignUp = () => {
                     required
                     error={!!errors.email}
                     helperText={errors.email}
+                    disabled={isVerified}
                   />
-                  <Button variant="outlined" onClick={handleSendCode} disabled={isCodeSent}>인증 코드 전송</Button>
+                  <Button variant="outlined" onClick={handleSendCode} disabled={isVerified}>
+                    {isCodeSent ? '인증 코드 재전송' : '인증 코드 전송'}
+                  </Button>
                   {isCodeSent && (
                     <>
                       <TextField
-                        label="인증 코드"
+                        label={`인증 코드${timer > 0 ? ` (${Math.floor(timer / 60)}:${('0' + (timer % 60)).slice(-2)})` : ''}`}
                         name="verification_code"
                         value={formData.verification_code}
                         onChange={handleChange}
                         required
                         error={!!errors.verification_code}
                         helperText={errors.verification_code}
+                        disabled={timer <= 0 || isVerified}
                       />
-                      <Button variant="outlined" onClick={handleVerifyCode}>인증 코드 확인</Button>
+                      <Button variant="outlined" onClick={handleVerifyCode} disabled={isVerified || timer <= 0}>인증 코드 확인</Button>
                     </>
                   )}
                   <TextField
@@ -436,6 +445,7 @@ const SignUp = () => {
                     required
                     error={!!errors.p_num}
                     helperText={errors.p_num}
+                    disabled={isPhoneNumberCheckSent}
                   />
                   <Button variant="outlined" onClick={checkPhoneNumber} disabled={isPhoneNumberCheckSent}>
                     중복 확인
@@ -506,7 +516,6 @@ const SignUp = () => {
       <PrivacyPolicyDialog open={openPrivacyPolicy} onClose={handleClosePrivacyPolicy} />
       <UseTermsDialog open={openUseTerms} onClose={handleCloseUseTerms} />
       <MarketingUtilizationDialog open={openMarketingUtilization} onClose={handleCloseMarketingUtilization} />
-    {/* </ProtectedRoute> */}
     </>
   );
 };
