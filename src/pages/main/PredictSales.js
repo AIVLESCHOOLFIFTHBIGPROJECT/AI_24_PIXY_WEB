@@ -136,8 +136,8 @@ const PredictSales = () => {
           selected={selectedDate}
           onChange={handleDateChange}
           dateFormat="yyyy-MM-dd"
-          placeholderText="Select a date"
-          customInput={<TextField label="Select a date" variant="outlined" />}
+          placeholderText="날짜를 선택하거나 입력"
+          customInput={<TextField label="날짜선택" variant="outlined" />}
         />
       </Box>
 
