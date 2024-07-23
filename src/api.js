@@ -17,6 +17,13 @@ api.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    
+    // CSRF 토큰 추가
+    const csrfToken = Cookies.get('csrftoken');
+    if (csrfToken) {
+      config.headers['X-CSRFToken'] = csrfToken;
+    }
+    
     return config;
   },
   (error) => {
