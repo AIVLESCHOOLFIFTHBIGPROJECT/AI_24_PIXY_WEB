@@ -9,16 +9,18 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    reset_password: '',
     confirm_password: '',
     p_num: '',
     verification_code: '',
   });
-  const [errors, setErrors] = useState({ email: '', password: '', confirm_password: '', p_num: '', verification_code: '' });
+  const [errors, setErrors] = useState({ email: '', password: '', confirm_password: '', p_num: '', verification_code: '', reset_password: '' });
   const [error, setError] = useState(''); // 에러 메시지 상태 추가
   const [codeSent, setCodeSent] = useState(false); // 인증 코드 전송 여부
   const [codeVerified, setCodeVerified] = useState(false); // 인증 코드 확인 여부
   const [resetPasswordEmail, setResetPasswordEmail] = useState(''); // 비밀번호 재설정 이메일 상태 추가
   const [timer, setTimer] = useState(0);
+  const [isResetPasswordDisabled, setIsResetPasswordDisabled] = useState(true); // 비밀번호 재설정 버튼 비활성화 상태 추가
   const navigate = useNavigate();
   const { login } = useUser(); // Context에서 login 함수를 가져옵니다
 
@@ -34,6 +36,14 @@ const Login = () => {
     }
   }, [timer]);
 
+  useEffect(() => {
+    if (formData.reset_password && formData.confirm_password && formData.reset_password === formData.confirm_password) {
+      setIsResetPasswordDisabled(false);
+    } else {
+      setIsResetPasswordDisabled(true);
+    }
+  }, [formData.reset_password, formData.confirm_password]);
+
   const validateField = (name, value) => {
     let error = '';
 
@@ -43,7 +53,7 @@ const Login = () => {
           error = '유효한 이메일 주소를 입력하세요.';
         }
         break;
-      case 'password':
+      case 'reset_password':
         if (value.length < 8 || value.length > 16) {
           error = '비밀번호는 8~16자리이어야 합니다.';
         } else if (!/(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])/.test(value)) {
@@ -51,7 +61,7 @@ const Login = () => {
         }
         break;
       case 'confirm_password':
-        if (value !== formData.password) {
+        if (value !== formData.reset_password) {
           error = '비밀번호가 일치하지 않습니다.';
         }
         break;
@@ -192,15 +202,15 @@ const Login = () => {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    const { password, confirm_password } = e.target.elements;
+    const { reset_password, confirm_password } = e.target.elements;
 
-    if (password.value !== confirm_password.value) {
+    if (reset_password.value !== confirm_password.value) {
       alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
-    if (errors.password) {
-      alert(errors.password);
+    if (errors.reset_password) {
+      alert(errors.reset_password);
       return;
     }
 
@@ -213,7 +223,7 @@ const Login = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${secrets_token}`,
         },
-        body: JSON.stringify({ email: resetPasswordEmail, new_password: password.value }),
+        body: JSON.stringify({ email: resetPasswordEmail, new_password: reset_password.value }),
       });
 
       if (!response.ok) {
@@ -241,11 +251,11 @@ const Login = () => {
               <Typography variant="h4" align="center" gutterBottom>
                 로그인
               </Typography>
-              {error && (
+              {/* {error && (
                 <Typography variant="body1" color="error" align="center">
                   {error}
                 </Typography>
-              )}
+              )} */}
           </Box>
           <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -336,14 +346,18 @@ const Login = () => {
                 <Box component="form" onSubmit={handleResetPassword} sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
                   <TextField
                     label="새 비밀번호"
-                    name="password"
+                    name="reset_password"
                     type="password"
                     required
-                    error={!!errors.password}
-                    helperText={errors.password}
+                    error={!!errors.reset_password}
+                    helperText={errors.reset_password}
                     onChange={(e) => {
-                      const password = e.target.value;
-                      validateField('password', password);
+                      const reset_password = e.target.value;
+                      validateField('reset_password', reset_password);
+                      setFormData((prev) => ({
+                        ...prev,
+                        reset_password,
+                      }));
                     }}
                   />
                   <TextField 
@@ -351,17 +365,24 @@ const Login = () => {
                     name="confirm_password" 
                     type="password" 
                     value={formData.confirm_password}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                      validateField('confirm_password', e.target.value);
+                      setFormData((prev) => ({
+                        ...prev,
+                        confirm_password: e.target.value,
+                      }));
+                    }}
                     required
                     error={!!errors.confirm_password}
                     helperText={errors.confirm_password}
                     sx={{
                       '& .MuiFormHelperText-root': {
-                        color: formData.confirm_password === formData.password ? 'green' : 'red',
+                        color: formData.confirm_password === formData.reset_password ? 'green' : 'red',
                       },
                     }}
                   />
-                  <Button type="submit" variant="contained">비밀번호 재설정</Button>
+                  <Button type="submit" variant="contained" disabled={isResetPasswordDisabled}>비밀번호 재설정</Button>
                 </Box>
               )}
             </>

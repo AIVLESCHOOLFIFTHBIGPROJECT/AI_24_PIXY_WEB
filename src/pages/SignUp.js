@@ -30,6 +30,7 @@ const SignUp = () => {
   const [isPhoneNumberVerified, setIsPhoneNumberVerified] = useState(false);
   const [isPhoneNumberCheckSent, setIsPhoneNumberCheckSent] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [isBusinessNumberVerified, setIsBusinessNumberVerified] = useState(false); // 사업자등록번호 유효성 상태 추가
   const navigate = useNavigate();
 
   const [openPrivacyPolicy, setOpenPrivacyPolicy] = useState(false);
@@ -210,9 +211,33 @@ const SignUp = () => {
     }
   };
 
+  const checkBusinessNumber = async () => {
+    try {
+      const response = await api.post('/api/user/check-business/', { b_no: [formData.r_num.replace(/-/g, '')] });
+      const { data } = response.data;
+      if (data[0].tax_type === "국세청에 등록되지 않은 사업자등록번호입니다.") {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          r_num: '국세청에 등록되지 않은 사업자등록번호입니다.',
+        }));
+        setIsBusinessNumberVerified(false);
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          r_num: '',
+        }));
+        setIsBusinessNumberVerified(true);
+        alert('사업자등록번호 확인 완료');
+      }
+    } catch (error) {
+      console.error('사업자등록번호 확인 실패:', error);
+      setIsBusinessNumberVerified(false);
+      alert('사업자등록번호 확인 실패');
+    }
+  };
+
   const formatPhoneNumber = (value) => {
     value = value.replace(/\D/g, '');
-    // console.log(value.length);
     if (value.length == 7){
       value = value.replace(/^(\d{3})(\d{0,4})/, '$1-$2');
     }
@@ -245,7 +270,7 @@ const SignUp = () => {
     try {
       await api.post('/api/user/send-code/nonuser/', { email: formData.email });
       setIsCodeSent(true);
-      setTimer(10); // 5분 타이머 시작
+      setTimer(300); // 5분 타이머 시작
       alert('인증 코드가 전송되었습니다.');
     } catch (error) {
       console.error('인증 코드 전송 실패:', error);
@@ -265,6 +290,18 @@ const SignUp = () => {
   };
 
   const isNextDisabled = () => {
+    // console.log(        !formData.email ||
+    //   !formData.password ||
+    //   !formData.confirm_password ||
+    //   !formData.name ||
+    //   !formData.p_num ||
+    //   !!errors.email ||
+    //   !!errors.password ||
+    //   !!errors.confirm_password ||
+    //   !!errors.name ||
+    //   !!errors.p_num ||
+    //   !isVerified ||
+    //   !isPhoneNumberVerified);
     if (step === 0) {
       return !(formData.is_agreement1 && formData.is_agreement2);
     } else if (step === 1) {
@@ -274,11 +311,11 @@ const SignUp = () => {
         !formData.confirm_password ||
         !formData.name ||
         !formData.p_num ||
-        errors.email ||
-        errors.password ||
-        errors.confirm_password ||
-        errors.name ||
-        errors.p_num ||
+        !!errors.email ||
+        !!errors.password ||
+        !!errors.confirm_password ||
+        !!errors.name ||
+        !!errors.p_num ||
         !isVerified ||
         !isPhoneNumberVerified
       );
@@ -287,8 +324,9 @@ const SignUp = () => {
         !formData.store_name ||
         !formData.r_num ||
         !formData.business_r ||
-        errors.store_name ||
-        errors.r_num
+        !!errors.store_name ||
+        !!errors.r_num ||
+        !isBusinessNumberVerified // 사업자등록번호 확인 상태를 고려
       );
     }
     return false;
@@ -469,7 +507,11 @@ const SignUp = () => {
                     required
                     error={!!errors.r_num}
                     helperText={errors.r_num}
+                    disabled={isBusinessNumberVerified}
                   />
+                  <Button variant="outlined" onClick={checkBusinessNumber} disabled={isBusinessNumberVerified}>
+                    사업자등록번호 확인
+                  </Button>
                   <Typography variant="subtitle1">사업자등록증 파일 업로드</Typography>
                   <input
                     type="file"
