@@ -1,143 +1,192 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
+import { Box, Button, Typography, TextField, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Pagination, InputAdornment, IconButton } from '@mui/material';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 const Sales = () => {
-    const [file, setFile] = useState(null);
-    const [products, setProducts] = useState([]);
-    const [uploadError, setUploadError] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [currentPage, setCurrentPage] = useState(0);
+  const [file, setFile] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [uploadError, setUploadError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [fileName, setFileName] = useState(null);
 
-    const itemsPerPage = 10;
+  const itemsPerPage = 10;
 
-    const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
-    };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-    const handleUpload = async () => {
-        if (!file) {
-            setUploadError('Please select a file to upload.');
-            return;
-        }
+  const fetchProducts = async () => {
+    const accessToken = sessionStorage.getItem('access_token');
+    try {
+      const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/product/', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`, // Authorization 헤더에 토큰 포함
+        },
+      });
+      setProducts(productResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+      setUploadError('Failed to fetch products.');
+    }
+  };
 
-        const formData = new FormData();
-        formData.append('uploaded_file', file);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(e.target.files[0]);
+      setFileName(selectedFile.name);
+    }
+  };
 
-        const accessToken = sessionStorage.getItem('access_token');
+  const handleUpload = async () => {
+    if (!file) {
+      setUploadError('Please select a file to upload.');
+      return;
+    }
 
-        try {
-            setLoading(true);
-            setUploadError(null);
+    const formData = new FormData();
+    formData.append('uploaded_file', file);
+    formData.append('f_name', fileName);
 
-            // POST 요청
-            // await axios.post('https://api.pixy.kro.kr/api/store/stores/', formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data'
-            //     }
-            // });
+    const accessToken = sessionStorage.getItem('access_token');
 
-            // StoreUploadList POST 요청 성공 후 ProductList GET 요청
-            const productResponse = await axios.get('https://api.pixy.kro.kr/api/product/product/', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}` // Authorization 헤더에 토큰 포함
-                }
-            });
-            setProducts(productResponse.data);
+    try {
+      setLoading(true);
+      setUploadError(null);
 
-        } catch (error) {
-            setUploadError('Failed to upload the file or fetch products.');
-        } finally {
-            setLoading(false);
-        }
-    };
+      // POST 요청
+      await axios.post('https://api.pixy.kro.kr/api/store/stores/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${accessToken}`, // Authorization 헤더에 토큰 포함
+        },
+      });
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-        setCurrentPage(0); // 날짜 변경 시 페이지를 첫 페이지로 리셋
-    };
+      // POST 요청 성공 후 GET 요청
+      fetchProducts();
+    } catch (error) {
+      console.error('Failed to upload the file or fetch products:', error);
+      setUploadError('Failed to upload the file or fetch products.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handlePageClick = (pageIndex) => {
-      setCurrentPage(pageIndex);
-    };
-  
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setCurrentPage(0); // 날짜 변경 시 페이지를 첫 페이지로 리셋
+  };
 
-    const filteredProducts = products.filter((product) => {
-        if (!selectedDate) return true;
-        return format(new Date(product.date), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
-    });
+  const handlePageClick = (event, pageIndex) => {
+    setCurrentPage(pageIndex - 1);
+  };
 
-    const pageCount = Math.ceil(filteredProducts.length / itemsPerPage);
-    const offset = currentPage * itemsPerPage;
-    const currentItems = filteredProducts.slice(offset, offset + itemsPerPage);
+  const filteredProducts = products.filter((product) => {
+    if (!selectedDate) return true;
+    return format(new Date(product.date), 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+  });
 
-    return (
-        <div>
-            <h1>Sales Page</h1>
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={handleUpload} disabled={loading}>
-                {loading ? 'Uploading...' : 'Upload'}
-            </button>
-            {uploadError && <p style={{ color: 'red' }}>{uploadError}</p>}
-            <div>
-                <DatePicker
-                    selected={selectedDate}
-                    onChange={handleDateChange}
-                    dateFormat="yyyy-MM-dd"
-                    placeholderText="Select a date"
-                />
-            </div>
-            <div style={{ height: '100vh' }}>
-                <h1>상품 리스트</h1>
-            <div className="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>상품 분류</th>
-                            <th>판매량</th>
-                            <th>날짜</th>
-                            <th></th>
-                            <th>재고</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentItems && currentItems.map((product) => {
-                            console.log("Product:", product); // 각 product 객체를 콘솔에 출력
-                            return (
-                                <tr key={product.p_num}>
-                                    <td>{product.p_num}</td>
-                                    <td>{product.category}</td>
-                                    <td>{product.sales}</td>
-                                    <td>{product.date}</td>
-                                    <td></td>
-                                    <td>{product.stock}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-                  <div className="pagination-buttons">
-                    {/* 페이지 버튼 생성 */}
-                    {[...Array(pageCount)].map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => handlePageClick(index)}
-                            className={index === currentPage ? 'active' : ''}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
-                  </div>
+  const pageCount = Math.ceil(filteredProducts.length / itemsPerPage);
+  const offset = currentPage * itemsPerPage;
+  const currentItems = filteredProducts.slice(offset, offset + itemsPerPage);
 
-            </div>
-        </div>
-    );
+  const CustomInput = forwardRef(({ value, onClick, onChange }, ref) => (
+    <TextField
+      label="날짜선택"
+      variant="outlined"
+      value={value}
+      onClick={onClick}
+      onChange={onChange}
+      ref={ref}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={onClick}>
+              <CalendarTodayIcon />
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+    />
+  ));
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        판매/재고
+      </Typography>
+
+      <Box sx={{ mb: 3 }}>
+        <Button variant="contained" component="label">
+          파일선택
+          <input type="file" hidden onChange={handleFileChange} />
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleUpload}
+          disabled={loading}
+          sx={{ ml: 2 }}
+        >
+          {loading ? <CircularProgress size={24} /> : '등록'}
+        </Button>
+        {uploadError && <Typography color="error">{uploadError}</Typography>}
+      </Box>
+
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+        <DatePicker
+          selected={selectedDate}
+          onChange={handleDateChange}
+          dateFormat="yyyy-MM-dd"
+          placeholderText="날짜를 선택하거나 입력"
+          customInput={<CustomInput />}
+        />
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h5" gutterBottom>
+            상품 목록
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>번호</TableCell>
+                <TableCell>상품 분류</TableCell>
+                <TableCell>판매량</TableCell>
+                <TableCell>날짜</TableCell>
+                <TableCell>재고</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {currentItems.map((product) => (
+                <TableRow key={product.p_num}>
+                  <TableCell>{product.p_num}</TableCell>
+                  <TableCell>{product.category}</TableCell>
+                  <TableCell>{product.sales}</TableCell>
+                  <TableCell>{product.date}</TableCell>
+                  <TableCell>{product.stock}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+        <Pagination
+          count={pageCount}
+          page={currentPage + 1}
+          onChange={(event, page) => handlePageClick(event, page)}
+        />
+      </Box>
+    </Box>
+  );
 };
 
 export default Sales;
