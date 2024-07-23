@@ -101,7 +101,7 @@ const Notice = () => {
                     <TableCell colSpan={3}>
                       <Collapse in={expandedNoticeId === notice.id} timeout="auto" unmountOnExit>
                         <Box margin={1}>
-                          <Typography>{notice.content}</Typography>
+                          <Typography sx={{ fontWeight: 'bold' }}>{notice.content}</Typography>
                         </Box>
                       </Collapse>
                     </TableCell>
