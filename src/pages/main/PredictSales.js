@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -17,7 +17,10 @@ import {
   TableRow,
   CircularProgress,
   Pagination,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 const PredictSales = () => {
   const [file, setFile] = useState(null);
@@ -109,6 +112,26 @@ const PredictSales = () => {
   const offset = currentPage * itemsPerPage;
   const currentItems = filteredProducts.slice(offset, offset + itemsPerPage);
 
+  const CustomInput = forwardRef(({ value, onClick, onChange }, ref) => (
+    <TextField
+      label="날짜선택"
+      variant="outlined"
+      value={value}
+      onClick={onClick}
+      onChange={onChange}
+      ref={ref}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={onClick}>
+              <CalendarTodayIcon />
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+    />
+  ));
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -131,13 +154,13 @@ const PredictSales = () => {
         {uploadError && <Typography color="error">{uploadError}</Typography>}
       </Box>
 
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
         <DatePicker
           selected={selectedDate}
           onChange={handleDateChange}
           dateFormat="yyyy-MM-dd"
           placeholderText="날짜를 선택하거나 입력"
-          customInput={<TextField label="날짜선택" variant="outlined" />}
+          customInput={<CustomInput />}
         />
       </Box>
 
