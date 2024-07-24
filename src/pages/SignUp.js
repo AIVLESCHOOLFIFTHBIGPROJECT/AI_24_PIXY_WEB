@@ -341,7 +341,7 @@ const SignUp = () => {
           </Link>
         </Box>      
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh'}}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 320, p: 4, backgroundColor: 'white', borderRadius: 2, boxShadow: 1, height: '80vh' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 600, p: 4, backgroundColor: 'white', borderRadius: 2, boxShadow: 1, height: '80vh' }}>
             <Box>
               {(step === 0 || step === 1 || step === 2) && (
                 <Typography variant="h4" align="center" gutterBottom>
@@ -354,7 +354,7 @@ const SignUp = () => {
                 </Typography>
               )}
             </Box>
-            <Box>
+            <Box sx={{display: 'flex', justifyContent: 'center'}}>
               {step === 0 && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <FormControlLabel

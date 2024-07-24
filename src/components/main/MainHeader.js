@@ -50,7 +50,7 @@ const MainHeader = () => {
 
   return (
     <AppBar position='fixed' color="default" elevation={0}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', background: "white" }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', background: "white", borderBottom: "1px solid #e9ebf2" }}>
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
