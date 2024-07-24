@@ -48,7 +48,7 @@ const PixyCustom = () => {
   setChatHistory((prevHistory) => [...prevHistory, { type: 'question', content: question }]);
 
   try {
-    const response = await fetch('https://api.pixy.kro.kr/api/pixycustom/ask/', {
+    const response = await fetch('https://api.pixy.kro.kr/api/custom/ask/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
