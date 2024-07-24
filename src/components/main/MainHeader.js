@@ -61,7 +61,7 @@ const MainHeader = () => {
         {
           !isSmallScreen &&
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button color="inherit" component={Link} to="/main/notifications">알림</Button>
+            {/* <Button color="inherit" component={Link} to="/main/notifications">알림</Button> */}
             <Button color="inherit" onClick={handleLogout}>로그아웃</Button>
           </Box>
         }
@@ -71,9 +71,10 @@ const MainHeader = () => {
             <Box sx={{display: 'flex'}}>
 
               <Box sx={{ display: 'flex', gap: 2 }}>
-                <Button color="inherit" component={Link} to="/main/notifications">알림</Button>
+                {/* <Button color="inherit" component={Link} to="/main/notifications">알림</Button> */}
                 <Button color="inherit" onClick={handleLogout}>로그아웃</Button>
-              </Box>          <Button
+              </Box>          
+              <Button
                 color="inherit"
                 onClick={handleMenu}
                 sx={{
@@ -102,8 +103,8 @@ const MainHeader = () => {
                 <MenuItem onClick={handleClose} component={Link} to="/main/pixycustom">픽시커스텀</MenuItem>
                 <MenuItem onClick={handleClose} component={Link} to="/main/sales">판매/재고</MenuItem>
                 <MenuItem onClick={handleClose} component={Link} to="/main/predictsales">판매/예측</MenuItem>
-                <MenuItem onClick={handleClose} component={Link} to="/main/cctv">CCTV</MenuItem>
-                <MenuItem onClick={handleClose} component={Link} to="/main/cctvfire">CCTV-Fire</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} to="/main/cctv">CCTV-절도감지</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} to="/main/cctvfire">CCTV-화재감지</MenuItem>
                 <MenuItem onClick={handleClose} component={Link} to="/main/inquiry">문의 게시판</MenuItem>
                 <MenuItem onClick={handleClose} component={Link} to="/main/notice">공지사항</MenuItem>
                 <MenuItem onClick={handleClose} component={Link} to="/main/settings">설정</MenuItem>
