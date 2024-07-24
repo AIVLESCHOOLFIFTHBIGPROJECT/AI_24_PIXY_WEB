@@ -133,12 +133,25 @@ const PredictSales = () => {
   ));
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        판매/예측
+    <Box sx={{ flexGrow: 1, p: 3, background: 'transparent' }}>
+      <Typography variant="h4" gutterBottom sx={{ pb: '1.4rem' }}>
+      판매/예측
       </Typography>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: '4rem',
+          background: '#ffffff',
+          border: '1px solid #e9ebf2',
+          borderRadius: '1.6rem',
+          display: 'flex',
+          flexDirection: 'column',
+          //alignItems: 'center',
+        }}
+      >
+<Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between' }}>
 
-      <Box sx={{ mb: 3 }}>
+<Box>
         <Button variant="contained" component="label">
           파일선택
           <input type="file" hidden onChange={handleFileChange} />
@@ -154,7 +167,13 @@ const PredictSales = () => {
         {uploadError && <Typography color="error">{uploadError}</Typography>}
       </Box>
 
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+      <Box
+        sx={{ 
+          mb: 3, 
+          //display: 'flex', 
+          //justifyContent: 'flex-end' 
+          }}
+      >
         <DatePicker
           selected={selectedDate}
           onChange={handleDateChange}
@@ -163,9 +182,10 @@ const PredictSales = () => {
           customInput={<CustomInput />}
         />
       </Box>
+</Box>
 
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h5" gutterBottom sx={{ pb: '1.4rem' }}>
           판매량 예측 목록
         </Typography>
         <TableContainer component={Paper}>
@@ -200,6 +220,7 @@ const PredictSales = () => {
           page={currentPage + 1}
           onChange={handlePageClick}
         />
+      </Box>
       </Box>
     </Box>
   );
