@@ -108,9 +108,20 @@ const Inquiry = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>문의 게시판</Typography>
-
+    <Box sx={{ flexGrow: 1, p: 3, background: 'transparent'  }}>
+      <Typography variant="h4" gutterBottom sx={{ pb: '1.4rem' }}>문의 게시판</Typography>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: '4rem',
+          background: '#ffffff',
+          border: '1px solid #e9ebf2',
+          borderRadius: '1.6rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
       <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
         <TextField
           label="제목"
@@ -204,6 +215,7 @@ const Inquiry = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      </Box>
     </Box>
   );
 };

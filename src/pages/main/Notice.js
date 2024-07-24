@@ -70,8 +70,20 @@ const Notice = () => {
   if (error) return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography>Error: {error}</Typography></Box>;
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>공지사항</Typography>
+    <Box sx={{ flexGrow: 1, p: 3, background: 'transparent'  }}>
+      <Typography variant="h4" gutterBottom sx={{ pb: '1.4rem' }}>공지사항</Typography>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: '4rem',
+          background: '#ffffff',
+          border: '1px solid #e9ebf2',
+          borderRadius: '1.6rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -119,6 +131,7 @@ const Notice = () => {
           <MenuItem value={20}>20</MenuItem>
         </Select>
         <Pagination count={totalPages} page={page} onChange={handlePageChange} />
+      </Box>
       </Box>
     </Box>
   );
