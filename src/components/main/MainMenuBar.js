@@ -49,11 +49,11 @@ const MainMenuBar = () => {
           </ListItem>
           <ListItem button component={Link} to="/main/cctv">
             <ListItemIcon><CctvIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
-            <ListItemText primary="CCTV" />
+            <ListItemText primary="CCTV-절도감지" />
           </ListItem>
           <ListItem button component={Link} to="/main/cctvfire">
             <ListItemIcon><CctvIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>
-            <ListItemText primary="CCTV-Fire" />
+            <ListItemText primary="CCTV-화재감지" />
           </ListItem>
           <ListItem button component={Link} to="/main/inquiry">
             <ListItemIcon><InquiryIcon style={{ width: '24px', height: '24px' }} /></ListItemIcon>

@@ -79,7 +79,7 @@ const TeamSection = () => {
           { title: "역할_신민철", image: smcImg, description: "경력1 \n 경력2 \n 경력3" },
           { title: "역할_박유빈", image: pypImg, description: "경력1 \n 경력2 \n 경력3" },
         ].map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid item xs={12} sm={6} md={4} key={index} px={2}>
             <FeatureCard
               title={item.title}
               image={item.image}
