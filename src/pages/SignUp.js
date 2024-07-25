@@ -283,8 +283,8 @@ const SignUp = () => {
   const handleSendCode = async () => {
     try {
       await api.post("/api/user/send-code/nonuser/", { email: formData.email });
-      setIsCodeSent(true);
       setTimer(300); // 5분 타이머 시작
+      setIsCodeSent(true);
       alert("인증 코드가 전송되었습니다.");
     } catch (error) {
       console.error("인증 코드 전송 실패:", error);
@@ -627,7 +627,6 @@ const SignUp = () => {
                         <Typography
                           variant="caption"
                           color="error"
-                          component="div"
                         >
                           {errors.password.split("\n").map((line, index) => (
                             <React.Fragment key={index}>
