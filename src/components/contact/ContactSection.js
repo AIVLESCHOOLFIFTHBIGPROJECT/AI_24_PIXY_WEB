@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Grid, TextField, Button, useTheme, useMediaQuery } from '@mui/material';
 import { keyframes } from '@emotion/react';
 
@@ -14,6 +14,15 @@ const moveGradient = keyframes`
 const ContactSection = () => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery('(min-width:1920px)');
+
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = () => {
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(message);
+    window.location.href = `mailto:csc19991227@gmail.com?subject=${encodedSubject}&body=${encodedBody}`;
+  };
 
   return (
     <Box sx={{ bgcolor: 'background.default' }}>
@@ -60,7 +69,7 @@ const ContactSection = () => {
       
       <Box
         sx={{
-          height: '200px',
+          height: '250px',
           position: 'relative',
           overflow: 'hidden',
           color: 'white',
@@ -77,6 +86,8 @@ const ContactSection = () => {
             bottom: 0,
             width: '200%',
             background: '#675AFF',
+            pt:5,
+            pb:5
           }}
         />
         <Grid container spacing={0} sx={{ maxWidth: '1200px', mx: 'auto', position: 'relative', zIndex: 1 }}>
@@ -123,28 +134,30 @@ const ContactSection = () => {
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
         <Box sx={{ maxWidth: 800, width: '100%' }}>
           <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
+            {/* <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Name"
                 variant="outlined"
                 margin="normal"
               />
-            </Grid>
-            <Grid item xs={12} md={6}>
+            </Grid> */}
+            {/* <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Email"
                 variant="outlined"
                 margin="normal"
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Subject"
                 variant="outlined"
                 margin="normal"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -155,10 +168,12 @@ const ContactSection = () => {
                 margin="normal"
                 multiline
                 rows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sx={{ textAlign: 'center' }}>
-              <Button variant="contained" color="primary" size="large">
+              <Button variant="contained" color="primary" size="large" onClick={handleSubmit}>
                 제출하기
               </Button>
             </Grid>
