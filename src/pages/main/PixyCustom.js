@@ -10,6 +10,7 @@ const PixyCustom = () => {
   const [listening, setListening] = useState(false);
   const [response, setResponse] = useState('');
   const [chatHistory, setChatHistory] = useState([]); // For storing the chat history
+  const [uploadedFileName, setUploadedFileName] = useState(''); // For storing the uploaded file name
 
   useEffect(() => {
     recognition.onstart = () => {
@@ -45,36 +46,35 @@ const PixyCustom = () => {
   };
 
   const handleQuestion = async (question) => {
-  setChatHistory((prevHistory) => [...prevHistory, { type: 'question', content: question }]);
+    setChatHistory((prevHistory) => [...prevHistory, { type: 'question', content: question }]);
 
-  try {
-    const response = await fetch('https://api.pixy.kro.kr/api/custom/ask/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ question }),
-    });
+    try {
+      const response = await fetch('https://api.pixy.kro.kr/api/custom/ask/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Response Data:', data);
+
+      const answer = data.answer;
+      console.log('Answer:', answer);
+      setResponse(answer);
+
+      setChatHistory((prevHistory) => [...prevHistory, { type: 'answer', content: answer }]);
+
+      speak(answer);
+    } catch (error) {
+      console.error('Error fetching answer:', error);
     }
-
-    const data = await response.json();
-    console.log('Response Data:', data);
-
-    const answer = data.answer;
-    console.log('Answer:', answer);
-    setResponse(answer);
-
-    setChatHistory((prevHistory) => [...prevHistory, { type: 'answer', content: answer }]);
-
-    speak(answer);
-  } catch (error) {
-    console.error('Error fetching answer:', error);
-  }
-};
-
+  };
 
   const speak = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -86,8 +86,22 @@ const PixyCustom = () => {
     setListening(true);
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedFileName(file.name);
+      // 여기에서 파일 업로드 처리를 추가할 수 있습니다.
+    }
+  };
+
   return (
     <div style={{ height: '160vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+        <input type="file" onChange={handleFileChange} />
+        {uploadedFileName && (
+          <p>업로드 파일: {uploadedFileName}</p>
+        )}
+      </div>
       <button onClick={startListening} style={{ marginBottom: '20px', padding: '10px 20px', fontSize: '16px' }}>
         Start Listening
       </button>
@@ -105,4 +119,3 @@ const PixyCustom = () => {
 };
 
 export default PixyCustom;
-
