@@ -21,6 +21,10 @@ import {
   IconButton,
 } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Sales = () => {
   const [file, setFile] = useState(null);
@@ -30,6 +34,7 @@ const Sales = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [fileName, setFileName] = useState(null);
+  const [editProduct, setEditProduct] = useState({ p_num: null, category: '', sales: '', date: '', stock: '' });
 
   const itemsPerPage = 10;
 
@@ -104,6 +109,45 @@ const Sales = () => {
 
   const handlePageClick = (event, pageIndex) => {
     setCurrentPage(pageIndex - 1);
+  };
+
+  const handleUpdateProduct = async (p_num) => {
+    const accessToken = sessionStorage.getItem('access_token');
+    console.log('handleUpdateProduct 호출됨:', p_num); // 디버깅 로그 추가
+    try {
+      const response = await axios.put(`https://api.pixy.kro.kr/api/product/product/${p_num}/`, editProduct, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      console.log('응답 데이터:', response.data); // 응답 데이터 확인
+      setProducts(products.map(product => (product.p_num === p_num ? response.data : product)));
+      setEditProduct({ p_num: null, category: '', sales: '', date: '', stock: '' });
+    } catch (error) {
+      console.error('Product를 수정하는 중 오류 발생:', error);
+    }
+  };
+
+  const handleDeleteProduct = async (p_num) => {
+    const accessToken = sessionStorage.getItem('access_token');
+    try {
+      await axios.delete(`https://api.pixy.kro.kr/api/product/product/${p_num}/`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      setProducts(products.filter(product => product.p_num !== p_num));
+    } catch (error) {
+      console.error('Product를 삭제하는 중 오류 발생:', error);
+    }
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditProduct({ ...editProduct, [field]: value });
+  };
+
+  const handleEditCancel = () => {
+    setEditProduct({ p_num: null, category: '', sales: '', date: '', stock: '' });
   };
 
   const filteredProducts = products.filter((product) => {
@@ -203,16 +247,90 @@ const Sales = () => {
                   <TableCell>판매량</TableCell>
                   <TableCell>날짜</TableCell>
                   <TableCell>재고</TableCell>
+                  <TableCell>관리</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {currentItems.map((product) => (
                   <TableRow key={product.p_num}>
-                    <TableCell>{product.p_num}</TableCell>
-                    <TableCell>{product.category}</TableCell>
-                    <TableCell>{product.sales}</TableCell>
-                    <TableCell>{product.date}</TableCell>
-                    <TableCell>{product.stock}</TableCell>
+                    <TableCell>
+                      {editProduct.p_num === product.p_num ? (
+                        <TextField
+                          value={editProduct.p_num}
+                          onChange={(e) => handleEditChange('p_num', e.target.value)}
+                          fullWidth
+                          disabled
+                        />
+                      ) : (
+                        product.p_num
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editProduct.p_num === product.p_num ? (
+                        <TextField
+                          value={editProduct.category}
+                          onChange={(e) => handleEditChange('category', e.target.value)}
+                          fullWidth
+                        />
+                      ) : (
+                        product.category
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editProduct.p_num === product.p_num ? (
+                        <TextField
+                          value={editProduct.sales}
+                          onChange={(e) => handleEditChange('sales', e.target.value)}
+                          fullWidth
+                        />
+                      ) : (
+                        product.sales
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editProduct.p_num === product.p_num ? (
+                        <DatePicker
+                          selected={new Date(editProduct.date)}
+                          onChange={(date) => handleEditChange('date', date.toISOString().split('T')[0])}
+                          dateFormat="yyyy-MM-dd"
+                          customInput={<TextField fullWidth />}
+                        />
+                      ) : (
+                        product.date
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editProduct.p_num === product.p_num ? (
+                        <TextField
+                          value={editProduct.stock}
+                          onChange={(e) => handleEditChange('stock', e.target.value)}
+                          fullWidth
+                        />
+                      ) : (
+                        product.stock
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editProduct.p_num === product.p_num ? (
+                        <>
+                          <IconButton onClick={() => handleUpdateProduct(product.p_num)}>
+                            <SaveIcon />
+                          </IconButton>
+                          <IconButton onClick={handleEditCancel}>
+                            <CancelIcon />
+                          </IconButton>
+                        </>
+                      ) : (
+                        <>
+                          <IconButton onClick={() => setEditProduct(product)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton onClick={() => handleDeleteProduct(product.p_num)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -220,11 +338,11 @@ const Sales = () => {
           </TableContainer>
         </Box>
 
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Pagination
             count={pageCount}
             page={currentPage + 1}
-            onChange={(event, page) => handlePageClick(event, page)}
+            onChange={handlePageClick}
           />
         </Box>
       </Box>
