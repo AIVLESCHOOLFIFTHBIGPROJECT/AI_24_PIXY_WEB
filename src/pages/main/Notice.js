@@ -75,7 +75,7 @@ const Notice = () => {
       <Box
         sx={{
           flexGrow: 1,
-          p: '4rem',
+          p: { xs: 2, md: 4 },
           background: '#ffffff',
           border: '1px solid #e9ebf2',
           borderRadius: '1.6rem',
