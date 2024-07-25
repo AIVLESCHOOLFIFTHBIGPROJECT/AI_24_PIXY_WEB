@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import Modal from "react-modal";
 import api from "../../api";
 import {
   TextField,
   Button,
   Box,
   Typography,
+  Grid,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from "@mui/material";
-
-// 모달의 root 요소를 설정합니다.
-Modal.setAppElement("#root");
 
 const CCTV = () => {
   const [videos, setVideos] = useState([]);
@@ -109,7 +105,7 @@ const CCTV = () => {
       <Box
         sx={{
           flexGrow: 1,
-          p: "4rem",
+          p: { xs: 2, md: 4 },
           background: "#ffffff",
           border: "1px solid #e9ebf2",
           borderRadius: "1.6rem",
@@ -121,49 +117,45 @@ const CCTV = () => {
         <Typography variant="h5" gutterBottom sx={{ pb: "1.4rem" }}>
           LIVE
         </Typography>
-        <div
-          style={{
-            /**height: '160vh',**/ display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {featuredVideo && (
-            <div style={{ width: "100%" /**, marginBottom: '20px'*/ }}>
-              <video width="100%" controls>
-                <source src={featuredVideo} type="video/mp4" />
-              </video>
-            </div>
-          )}
-        </div>
+        {featuredVideo && (
+          <Box sx={{ width: "100%", mb: 3 }}>
+            <video width="100%" controls>
+              <source src={featuredVideo} type="video/mp4" />
+            </video>
+          </Box>
+        )}
       </Box>
       <Box
         sx={{
           flexGrow: 1,
-          p: "4rem",
+          p: { xs: 2, md: 4 },
           background: "#ffffff",
           border: "1px solid #e9ebf2",
           borderRadius: "1.6rem",
           display: "flex",
           flexDirection: "column",
-          //alignItems: 'center',
         }}
       >
         <Typography variant="h5" gutterBottom sx={{ pb: "1.4rem" }}>
           CCTV 목록
         </Typography>
-        <div
-          style={{
+        <Box
+          sx={{
             width: "100%",
-            /**marginBottom: '20px',*/ display: "flex",
+            display: "flex",
             justifyContent: "space-between",
+            mb: 2,
           }}
         >
-          <Button {...getRootProps({ style: { marginRight: "10px" } })}>
+          <Button
+            variant="outlined"
+            {...getRootProps({ style: { marginRight: "10px" } })}
+          >
             <input {...getInputProps()} />
             Upload
           </Button>
           <Button
+            variant="outlined"
             onClick={() => {
               if (isDeleteMode) {
                 // deleteSelectedVideos(); // deleteSelectedVideos 함수가 아직 정의되지 않았으므로 주석 처리
@@ -174,123 +166,114 @@ const CCTV = () => {
           >
             {isDeleteMode ? "Confirm Delete" : "Delete"}
           </Button>
-        </div>
-        <div
-          style={{
+        </Box>
+        <Box
+          sx={{
             width: "100%",
             height: "70%",
-            //border: '2px solid black',
-            //borderRadius: '15px',
             position: "relative",
+            overflowY: "auto",
+            display: "flex",
+            flexWrap: "wrap",
+            padding: "10px",
           }}
         >
-          <div
-            style={{
-              overflowY: "scroll",
-              height: "100%",
-              padding: "10px",
-              display: "flex",
-              flexWrap: "wrap" /**, justifyContent: 'space-between'*/,
-            }}
-          >
-            {videos.length > 0 ? (
-              videos.map((video, index) => (
-                <div
-                  key={index}
-                  style={{
-                    margin: "10px",
-                    width: "18%",
-                    textAlign: "center",
-                    position: "relative",
-                  }}
-                >
-                  <div style={{ position: "relative", cursor: "pointer" }}>
-                    <video
-                      width="100%"
-                      onClick={() => handleVideoSelect(video.key)}
-                    >
-                      <source src={video.url} type="video/mp4" />
-                    </video>
-                    <button
-                      style={{
-                        marginTop: "10px",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        padding: "5px 10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => openModal(video.url)}
-                    >
-                      Play
-                    </button>
-                  </div>
-                  <p style={{ fontSize: "12px" }}>{video.title}</p>
-                  {isDeleteMode && selectedVideos.includes(video.key) && (
-                    <p style={{ color: "red" }}>Selected</p>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No videos available</p>
-            )}
-          </div>
-        </div>
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={{
-            content: {
-              top: "50%",
-              left: "50%",
-              right: "auto",
-              bottom: "auto",
-              marginRight: "-50%",
-              transform: "translate(-50%, -50%)",
-              width: "80%",
-              height: "80%",
-            },
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              borderBottom: "1px solid #ccc",
-              padding: "10px",
-            }}
-          >
-            <h2>Video Player</h2>
-            <button
-              onClick={closeModal}
-              style={{
-                background: "none",
-                border: "none",
-                fontSize: "1.5rem",
-                cursor: "pointer",
-              }}
-            >
-              x
-            </button>
-          </div>
-          {currentVideo && (
-            <div
-              style={{
-                width: "100%",
-                height: "calc(100% - 50px)",
+          {videos.length > 0 ? (
+            videos.map((video, index) => (
+              <Box
+                key={index}
+                sx={{
+                  margin: "10px",
+                  width: { xs: "100%", sm: "45%", md: "30%", lg: "22%" },
+                  textAlign: "center",
+                  position: "relative",
+                }}
+              >
+                <Box sx={{ position: "relative", cursor: "pointer" }}>
+                  <video
+                    width="100%"
+                    onClick={() => handleVideoSelect(video.key)}
+                  >
+                    <source src={video.url} type="video/mp4" />
+                  </video>
+                  <Button
+                    sx={{
+                      marginTop: "10px",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                      position: "absolute",
+                      bottom: "10px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                    }}
+                    onClick={() => openModal(video.url)}
+                  >
+                    Play
+                  </Button>
+                </Box>
+                <Typography variant="body2" sx={{ fontSize: "12px" }}>
+                  {video.title}
+                </Typography>
+                {isDeleteMode && selectedVideos.includes(video.key) && (
+                  <Typography variant="body2" sx={{ color: "red" }}>
+                    Selected
+                  </Typography>
+                )}
+              </Box>
+            ))
+          ) : (
+            <Typography variant="body1">No videos available</Typography>
+          )}
+        </Box>
+        <Dialog open={modalIsOpen} onClose={closeModal} maxWidth="lg" fullWidth>
+          <DialogTitle>
+            <Box
+              sx={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
               }}
             >
-              <video width="100%" height="100%" controls>
-                <source src={currentVideo} type="video/mp4" />
-              </video>
-            </div>
-          )}
-        </Modal>
+              <Typography variant="h6">Video Player</Typography>
+              {/* <Button
+                onClick={closeModal}
+                sx={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              >
+                x
+              </Button> */}
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            {currentVideo && (
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <video width="100%" controls>
+                  <source src={currentVideo} type="video/mp4" />
+                </video>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeModal} color="primary">
+              닫기
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Box>
   );
