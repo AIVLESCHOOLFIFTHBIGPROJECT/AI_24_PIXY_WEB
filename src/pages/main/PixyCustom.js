@@ -102,12 +102,13 @@ const PixyCustom = () => {
 
   const handleFileUpload = () => {
     if (uploadedFileName) {
-      setUploadStatus('업로드 완료');
+      alert('업로드 완료');
+      setUploadedFileName('');
     }
   };
 
   return (
-    <Box sx={{ height: '160vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+    <Box sx={{ height: '160vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', paddingTop: '20px' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px' }}>
         <Box>
           <Button variant="contained" component="label">
@@ -117,14 +118,14 @@ const PixyCustom = () => {
           <Button variant="contained" onClick={handleFileUpload} sx={{ ml: 1 }}>
             업로드
           </Button>
-          {uploadStatus && (
-            <Typography sx={{ mt: 1 }}>{uploadStatus}</Typography>
+          {uploadedFileName && (
+            <Typography sx={{ mt: 1 }}>{uploadedFileName}</Typography>
           )}
         </Box>
         <Button
           variant="contained"
           onClick={startListening}
-          sx={{ padding: '10px 20px', fontSize: '16px' }}
+          sx={{ padding: '10px 20px', fontSize: '16px', minWidth: '150px' }} // Adjusted minWidth to prevent resizing
           disabled={listening || loading}
         >
           {loading ? <CircularProgress size={24} /> : 'Start Listening'}
@@ -132,7 +133,7 @@ const PixyCustom = () => {
       </Box>
       <Box sx={{ maxWidth: '600px', width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#f9f9f9', mb: '20px' }}>
         {chatHistory.length === 0 ? (
-          <Typography sx={{ textAlign: 'center', color: '#999' }}>대화가 여기에 표시됩니다.</Typography>
+          <Typography sx={{ textAlign: 'center', color: '#999' }}>PIXY와 대화를 시작해 보세요.</Typography>
         ) : (
           chatHistory.map((chat, index) => (
             <Box key={index} sx={{ margin: '10px 0', textAlign: chat.type === 'question' ? 'left' : 'right' }}>
