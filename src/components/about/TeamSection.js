@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { Box, Typography, Card, CardContent, CardMedia, Grid, useMediaQuery } from '@mui/material';
 import cscImg from '../../assets/people/cscImg.png';
 import rjhImg from '../../assets/people/rjhImg.png';
 import hsyImg from '../../assets/people/hsyImg.png';
@@ -28,7 +28,7 @@ const FeatureCard = ({ title, image, description }) => (
       image={image}
       alt={title}
     />
-    <CardContent sx={{ flexGrow: 1, px:5 }}>
+    <CardContent sx={{ flexGrow: 1 }}>
       <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
         {title}
       </Typography>
@@ -42,6 +42,10 @@ const FeatureCard = ({ title, image, description }) => (
 );
 
 const TeamSection = () => {
+  const isLargeScreen = useMediaQuery('(min-width:1080px)');
+  const isMediumScreen = useMediaQuery('(min-width:680px) and (max-width:1079px)');
+  const isSmallScreen = useMediaQuery('(max-width:679px)');
+
   return (
     <Box sx={{ 
       py: 8, 
@@ -79,7 +83,15 @@ const TeamSection = () => {
           { title: "역할_신민철", image: smcImg, description: "경력1 \n 경력2 \n 경력3" },
           { title: "역할_박유빈", image: pypImg, description: "경력1 \n 경력2 \n 경력3" },
         ].map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index} px={2}>
+          <Grid 
+            item 
+            key={index} 
+            xs={12} 
+            sm={isSmallScreen ? 12 : isMediumScreen ? 6 : 4}
+            md={isSmallScreen ? 12 : isMediumScreen ? 6 : 4}
+            lg={isSmallScreen ? 12 : isMediumScreen ? 6 : 4}
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
             <FeatureCard
               title={item.title}
               image={item.image}

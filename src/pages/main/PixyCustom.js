@@ -99,7 +99,7 @@ const PixyCustom = () => {
       <div style={{ marginBottom: '20px', textAlign: 'center' }}>
         <input type="file" onChange={handleFileChange} />
         {uploadedFileName && (
-          <p>업로드한 파일 이름은: {uploadedFileName}</p>
+          <p>업로드 파일: {uploadedFileName}</p>
         )}
       </div>
       <button onClick={startListening} style={{ marginBottom: '20px', padding: '10px 20px', fontSize: '16px' }}>
