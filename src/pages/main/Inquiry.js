@@ -157,11 +157,15 @@ const Inquiry = () => {
 
   return (
     <Box sx={{ flexGrow: 1, p: { xs: 2, md: 3 }, background: "transparent" }}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ pb: { xs: "1rem", md: "1.4rem" } }}
-      >
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >
         문의 게시판
       </Typography>
       <Box

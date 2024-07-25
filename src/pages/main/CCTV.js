@@ -97,8 +97,16 @@ const CCTV = () => {
 
   return (
     <Box sx={{ flexGrow: 1, p: 3, background: "transparent" }}>
-      <Typography variant="h4" gutterBottom sx={{ pb: "1.4rem" }}>
-        CCTV-절도감지
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >
+        CCTV - 절도감지
       </Typography>
       <Box
         sx={{
@@ -117,8 +125,15 @@ const CCTV = () => {
         </Typography>
         {featuredVideo && (
           <Box sx={{ width: "100%", mb: 3 }}>
-            <video width="100%" controls>
+            <video 
+              width="100%" 
+              autoPlay 
+              loop 
+              muted 
+              playsInline
+            >
               <source src={featuredVideo} type="video/mp4" />
+              Your browser does not support the video tag.
             </video>
           </Box>
         )}
