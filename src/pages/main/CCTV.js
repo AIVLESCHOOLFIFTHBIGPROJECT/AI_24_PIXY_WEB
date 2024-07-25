@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useDropzone } from 'react-dropzone';
-import Modal from 'react-modal';
-import api from '../../api'; 
-
-// 모달의 root 요소를 설정합니다.
-Modal.setAppElement('#root');
+import React, { useState, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
+import api from "../../api";
+import {
+  Button,
+  Box,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 
 const CCTV = () => {
   const [videos, setVideos] = useState([]);
@@ -17,33 +22,37 @@ const CCTV = () => {
   const onDrop = (acceptedFiles) => {
     const formData = new FormData();
     acceptedFiles.forEach((file) => {
-      formData.append('original_video', file);
+      formData.append("original_video", file);
     });
-  
-    api.post(`/api/theft_detection/video/`, formData)
+
+    api
+      .post(`/api/theft_detection/video/`, formData)
       .then((response) => {
-        console.log('Upload Success:', response.data);
+        console.log("Upload Success:", response.data);
         fetchVideos();
       })
       .catch((error) => {
-        console.error('Upload Error:', error.response ? error.response.data : error.message);
-        // 오류 메시지를 더 자세히 로깅
+        console.error(
+          "Upload Error:",
+          error.response ? error.response.data : error.message
+        );
         if (error.response) {
-          console.error('Error response:', error.response.data);
-          console.error('Error status:', error.response.status);
-          console.error('Error headers:', error.response.headers);
+          console.error("Error response:", error.response.data);
+          console.error("Error status:", error.response.status);
+          console.error("Error headers:", error.response.headers);
         } else if (error.request) {
-          console.error('Error request:', error.request);
+          console.error("Error request:", error.request);
         } else {
-          console.error('Error message:', error.message);
+          console.error("Error message:", error.message);
         }
       });
   };
 
   const fetchVideos = () => {
-    api.get(`/api/theft_detection/video/list`)
+    api
+      .get(`/api/theft_detection/video/list`)
       .then((response) => {
-        console.log('Fetch Videos Success:', response.data);
+        console.log("Fetch Videos Success:", response.data);
         const urls = response.data.processed_videos.map((url, index) => ({
           url: url,
           key: index.toString(),
@@ -55,7 +64,10 @@ const CCTV = () => {
         }
       })
       .catch((error) => {
-        console.log('Fetch Videos Error:', error.response ? error.response.data : error.message);
+        console.log(
+          "Fetch Videos Error:",
+          error.response ? error.response.data : error.message
+        );
       });
   };
 
@@ -84,101 +96,200 @@ const CCTV = () => {
   };
 
   return (
-    <div style={{ height: '160vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ width: '80%', marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
-        <button {...getRootProps({ style: { marginRight: '10px' } })}>
-          <input {...getInputProps()} />
-          Upload
-        </button>
-        <button
-          onClick={() => {
-            if (isDeleteMode) {
-              // deleteSelectedVideos(); // deleteSelectedVideos 함수가 아직 정의되지 않았으므로 주석 처리
-            } else {
-              setIsDeleteMode(true);
-            }
-          }}
-        >
-          {isDeleteMode ? 'Confirm Delete' : 'Delete'}
-        </button>
-      </div>
-      {featuredVideo && (
-        <div style={{ width: '80%', marginBottom: '20px' }}>
-          <video width="100%" controls>
-            <source src={featuredVideo} type="video/mp4" />
-          </video>
-        </div>
-      )}
-      <div
-        style={{
-          width: '80%',
-          height: '70%',
-          border: '2px solid black',
-          borderRadius: '15px',
-          position: 'relative',
+    <Box sx={{ flexGrow: 1, p: 3, background: "transparent" }}>
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >
+        CCTV - 절도감지
+      </Typography>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: { xs: 2, md: 4 },
+          background: "#ffffff",
+          border: "1px solid #e9ebf2",
+          borderRadius: "1.6rem",
+          display: "flex",
+          flexDirection: "column",
+          mb: "1.4rem",
         }}
       >
-        <div style={{ overflowY: 'scroll', height: '100%', padding: '10px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+        <Typography variant="h5" gutterBottom sx={{ pb: "1.4rem" }}>
+          LIVE
+        </Typography>
+        {featuredVideo && (
+          <Box sx={{ width: "100%", mb: 3 }}>
+            <video 
+              width="100%" 
+              autoPlay 
+              loop 
+              muted 
+              playsInline
+            >
+              <source src={featuredVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </Box>
+        )}
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: { xs: 2, md: 4 },
+          background: "#ffffff",
+          border: "1px solid #e9ebf2",
+          borderRadius: "1.6rem",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Typography variant="h5" gutterBottom sx={{ pb: "1.4rem" }}>
+          CCTV 목록
+        </Typography>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            mb: 2,
+          }}
+        >
+          <Button
+            variant="outlined"
+            {...getRootProps({ style: { marginRight: "10px" } })}
+          >
+            <input {...getInputProps()} />
+            Upload
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              if (isDeleteMode) {
+                // deleteSelectedVideos(); // deleteSelectedVideos 함수가 아직 정의되지 않았으므로 주석 처리
+                setIsDeleteMode(false);
+              } else {
+                setIsDeleteMode(true);
+              }
+            }}
+          >
+            {isDeleteMode ? "Confirm Delete" : "Delete"}
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            width: "100%",
+            height: "70%",
+            position: "relative",
+            overflowY: "auto",
+            display: "flex",
+            flexWrap: "wrap",
+            padding: "10px",
+          }}
+        >
           {videos.length > 0 ? (
             videos.map((video, index) => (
-              <div key={index} style={{ margin: '10px', width: '18%', textAlign: 'center', position: 'relative' }}>
-                <div style={{ position: 'relative', cursor: 'pointer' }}>
-                  <video width="100%" onClick={() => handleVideoSelect(video.key)}>
+              <Box
+                key={index}
+                sx={{
+                  margin: "10px",
+                  width: { xs: "100%", sm: "45%", md: "30%", lg: "22%" },
+                  textAlign: "center",
+                  position: "relative",
+                }}
+              >
+                <Box sx={{ position: "relative", cursor: "pointer" }}>
+                  <video
+                    width="100%"
+                    onClick={() => handleVideoSelect(video.key)}
+                  >
                     <source src={video.url} type="video/mp4" />
                   </video>
-                  <button
-                    style={{
-                      marginTop: '10px',
-                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '5px',
-                      padding: '5px 10px',
-                      cursor: 'pointer',
+                  <Button
+                    sx={{
+                      marginTop: "10px",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                      position: "absolute",
+                      bottom: "10px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
                     }}
                     onClick={() => openModal(video.url)}
                   >
                     Play
-                  </button>
-                </div>
-                <p style={{ fontSize: '12px' }}>{video.title}</p>
-                {isDeleteMode && selectedVideos.includes(video.key) && <p style={{ color: 'red' }}>Selected</p>}
-              </div>
+                  </Button>
+                </Box>
+                <Typography variant="body2" sx={{ fontSize: "12px" }}>
+                  {video.title}
+                </Typography>
+                {isDeleteMode && selectedVideos.includes(video.key) && (
+                  <Typography variant="body2" sx={{ color: "red" }}>
+                    Selected
+                  </Typography>
+                )}
+              </Box>
             ))
           ) : (
-            <p>No videos available</p>
+            <Typography variant="body1">No videos available</Typography>
           )}
-        </div>
-      </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={{
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-            width: '80%',
-            height: '80%',
-          }
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc', padding: '10px' }}>
-          <h2>Video Player</h2>
-          <button onClick={closeModal} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
-        </div>
-        {currentVideo && (
-          <div style={{ width: '100%', height: 'calc(100% - 50px)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <video width="100%" height="100%" controls>
-              <source src={currentVideo} type="video/mp4" />
-            </video>
-          </div>
-        )}
-      </Modal>
-    </div>
+        </Box>
+        <Dialog open={modalIsOpen} onClose={closeModal} maxWidth="lg" fullWidth>
+          <DialogTitle>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">Video Player</Typography>
+              {/* <Button
+                onClick={closeModal}
+                sx={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
+              >
+                x
+              </Button> */}
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            {currentVideo && (
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <video width="100%" controls>
+                  <source src={currentVideo} type="video/mp4" />
+                </video>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeModal} color="primary">
+              닫기
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </Box>
   );
 };
 

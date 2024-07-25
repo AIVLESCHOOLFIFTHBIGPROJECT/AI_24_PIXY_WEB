@@ -71,11 +71,19 @@ const Notice = () => {
 
   return (
     <Box sx={{ flexGrow: 1, p: 3, background: 'transparent'  }}>
-      <Typography variant="h4" gutterBottom sx={{ pb: '1.4rem' }}>공지사항</Typography>
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >공지사항</Typography>
       <Box
         sx={{
           flexGrow: 1,
-          p: '4rem',
+          p: { xs: 2, md: 4 },
           background: '#ffffff',
           border: '1px solid #e9ebf2',
           borderRadius: '1.6rem',

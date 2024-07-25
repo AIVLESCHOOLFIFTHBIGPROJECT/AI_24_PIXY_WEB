@@ -19,12 +19,14 @@ import {
   Pagination,
   InputAdornment,
   IconButton,
+  Grid,
+  useMediaQuery,
 } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const Sales = () => {
   const [file, setFile] = useState(null);
@@ -34,9 +36,16 @@ const Sales = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [fileName, setFileName] = useState(null);
-  const [editProduct, setEditProduct] = useState({ p_num: null, category: '', sales: '', date: '', stock: '' });
+  const [editProduct, setEditProduct] = useState({
+    p_num: null,
+    category: "",
+    sales: "",
+    date: "",
+    stock: "",
+  });
 
   const itemsPerPage = 10;
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   useEffect(() => {
     fetchProducts();
@@ -63,8 +72,14 @@ const Sales = () => {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      setFile(e.target.files[0]);
-      setFileName(selectedFile.name);
+      if (selectedFile.type !== 'text/csv') {
+        alert('CSV파일만 업로드해주세요.');
+        e.target.value = '';
+      }
+      else{
+        setFile(e.target.files[0]);
+        setFileName(selectedFile.name);
+      }
     }
   };
 
@@ -94,9 +109,11 @@ const Sales = () => {
 
       // POST 요청 성공 후 GET 요청
       fetchProducts();
+      alert("등록 성공");
     } catch (error) {
+      alert("등록 실패");
       console.error("Failed to upload the file or fetch products:", error);
-      setUploadError("Failed to upload the file or fetch products.");
+      setUploadError("파일 등록을 실패했습니다. 컬럼을 확인해주세요.");
     } finally {
       setLoading(false);
     }
@@ -112,33 +129,50 @@ const Sales = () => {
   };
 
   const handleUpdateProduct = async (p_num) => {
-    const accessToken = sessionStorage.getItem('access_token');
-    console.log('handleUpdateProduct 호출됨:', p_num); // 디버깅 로그 추가
+    const accessToken = sessionStorage.getItem("access_token");
+    console.log("handleUpdateProduct 호출됨:", p_num); // 디버깅 로그 추가
     try {
-      const response = await axios.put(`https://api.pixy.kro.kr/api/product/product/${p_num}/`, editProduct, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
+      const response = await axios.put(
+        `https://api.pixy.kro.kr/api/product/product/${p_num}/`,
+        editProduct,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
+      );
+      console.log("응답 데이터:", response.data); // 응답 데이터 확인
+      setProducts(
+        products.map((product) =>
+          product.p_num === p_num ? response.data : product
+        )
+      );
+      setEditProduct({
+        p_num: null,
+        category: "",
+        sales: "",
+        date: "",
+        stock: "",
       });
-      console.log('응답 데이터:', response.data); // 응답 데이터 확인
-      setProducts(products.map(product => (product.p_num === p_num ? response.data : product)));
-      setEditProduct({ p_num: null, category: '', sales: '', date: '', stock: '' });
     } catch (error) {
-      console.error('Product를 수정하는 중 오류 발생:', error);
+      console.error("Product를 수정하는 중 오류 발생:", error);
     }
   };
 
   const handleDeleteProduct = async (p_num) => {
-    const accessToken = sessionStorage.getItem('access_token');
+    const accessToken = sessionStorage.getItem("access_token");
     try {
-      await axios.delete(`https://api.pixy.kro.kr/api/product/product/${p_num}/`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
+      await axios.delete(
+        `https://api.pixy.kro.kr/api/product/product/${p_num}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      });
-      setProducts(products.filter(product => product.p_num !== p_num));
+      );
+      setProducts(products.filter((product) => product.p_num !== p_num));
     } catch (error) {
-      console.error('Product를 삭제하는 중 오류 발생:', error);
+      console.error("Product를 삭제하는 중 오류 발생:", error);
     }
   };
 
@@ -147,7 +181,13 @@ const Sales = () => {
   };
 
   const handleEditCancel = () => {
-    setEditProduct({ p_num: null, category: '', sales: '', date: '', stock: '' });
+    setEditProduct({
+      p_num: null,
+      category: "",
+      sales: "",
+      date: "",
+      stock: "",
+    });
   };
 
   const filteredProducts = products.filter((product) => {
@@ -179,34 +219,50 @@ const Sales = () => {
           </InputAdornment>
         ),
       }}
+      fullWidth
     />
   ));
 
   return (
     <Box sx={{ flexGrow: 1, p: 3, background: "transparent" }}>
-      <Typography variant="h4" gutterBottom sx={{ pb: "1.4rem" }}>
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >
         판매/재고
       </Typography>
       <Box
         sx={{
           flexGrow: 1,
-          p: "4rem",
+          p: { xs: 2, md: 4 },
           background: "#ffffff",
           border: "1px solid #e9ebf2",
           borderRadius: "1.6rem",
           display: "flex",
           flexDirection: "column",
-          //alignItems: 'center',
+          mb: "1.4rem",
         }}
       >
-        <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between" }}>
-          <Box>
-            <Button variant="contained" component="label">
+        <Grid container spacing={2} justifyContent="space-between">
+        <Grid item xs={12} sm={6} md={4} display="flex" alignItems="center">
+            <Button variant="outlined" component="label">
               파일선택
-              <input type="file" hidden onChange={handleFileChange} />
+              <input
+                type="file"
+                hidden
+                accept=".csv"
+                onChange={handleFileChange}
+              />
             </Button>
+            <Typography sx={{ ml: 2 }}>{fileName}</Typography>
+
             <Button
-              variant="contained"
+              variant="outlined"
               onClick={handleUpload}
               disabled={loading}
               sx={{ ml: 2 }}
@@ -214,16 +270,10 @@ const Sales = () => {
               {loading ? <CircularProgress size={24} /> : "등록"}
             </Button>
             {uploadError && (
-              <Typography color="error">{uploadError}</Typography>
+              <Typography color="error" sx={{ ml: 2 }}>{uploadError}</Typography>
             )}
-          </Box>
-          <Box
-            sx={{
-              mb: 3,
-              //display: 'flex',
-              //justifyContent: 'flex-end'
-            }}
-          >
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
             <DatePicker
               selected={selectedDate}
               onChange={handleDateChange}
@@ -231,9 +281,20 @@ const Sales = () => {
               placeholderText="날짜를 선택하거나 입력"
               customInput={<CustomInput />}
             />
-          </Box>
-        </Box>
-
+          </Grid>
+        </Grid>
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: { xs: 2, md: 4 },
+          background: "#ffffff",
+          border: "1px solid #e9ebf2",
+          borderRadius: "1.6rem",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Box sx={{ mb: 3 }}>
           <Typography variant="h5" gutterBottom sx={{ pb: "1.4rem" }}>
             상품 목록
@@ -257,7 +318,9 @@ const Sales = () => {
                       {editProduct.p_num === product.p_num ? (
                         <TextField
                           value={editProduct.p_num}
-                          onChange={(e) => handleEditChange('p_num', e.target.value)}
+                          onChange={(e) =>
+                            handleEditChange("p_num", e.target.value)
+                          }
                           fullWidth
                           disabled
                         />
@@ -269,7 +332,9 @@ const Sales = () => {
                       {editProduct.p_num === product.p_num ? (
                         <TextField
                           value={editProduct.category}
-                          onChange={(e) => handleEditChange('category', e.target.value)}
+                          onChange={(e) =>
+                            handleEditChange("category", e.target.value)
+                          }
                           fullWidth
                         />
                       ) : (
@@ -280,7 +345,9 @@ const Sales = () => {
                       {editProduct.p_num === product.p_num ? (
                         <TextField
                           value={editProduct.sales}
-                          onChange={(e) => handleEditChange('sales', e.target.value)}
+                          onChange={(e) =>
+                            handleEditChange("sales", e.target.value)
+                          }
                           fullWidth
                         />
                       ) : (
@@ -291,7 +358,12 @@ const Sales = () => {
                       {editProduct.p_num === product.p_num ? (
                         <DatePicker
                           selected={new Date(editProduct.date)}
-                          onChange={(date) => handleEditChange('date', date.toISOString().split('T')[0])}
+                          onChange={(date) =>
+                            handleEditChange(
+                              "date",
+                              date.toISOString().split("T")[0]
+                            )
+                          }
                           dateFormat="yyyy-MM-dd"
                           customInput={<TextField fullWidth />}
                         />
@@ -303,7 +375,9 @@ const Sales = () => {
                       {editProduct.p_num === product.p_num ? (
                         <TextField
                           value={editProduct.stock}
-                          onChange={(e) => handleEditChange('stock', e.target.value)}
+                          onChange={(e) =>
+                            handleEditChange("stock", e.target.value)
+                          }
                           fullWidth
                         />
                       ) : (
@@ -313,7 +387,9 @@ const Sales = () => {
                     <TableCell>
                       {editProduct.p_num === product.p_num ? (
                         <>
-                          <IconButton onClick={() => handleUpdateProduct(product.p_num)}>
+                          <IconButton
+                            onClick={() => handleUpdateProduct(product.p_num)}
+                          >
                             <SaveIcon />
                           </IconButton>
                           <IconButton onClick={handleEditCancel}>
@@ -325,7 +401,9 @@ const Sales = () => {
                           <IconButton onClick={() => setEditProduct(product)}>
                             <EditIcon />
                           </IconButton>
-                          <IconButton onClick={() => handleDeleteProduct(product.p_num)}>
+                          <IconButton
+                            onClick={() => handleDeleteProduct(product.p_num)}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </>
@@ -338,7 +416,7 @@ const Sales = () => {
           </TableContainer>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Pagination
             count={pageCount}
             page={currentPage + 1}
