@@ -72,10 +72,10 @@ const FeaturesSection = () => {
         alignItems: 'center'
       }}>
         {[
-          { title: "고객의 입장 이해하는 목표", image: sampleImage1, description: "AI가 고객의 니즈를 분석하고 이해합니다." },
-          { title: "최적화 맞춤형 제품", image: sampleImage2, description: "고객에게 최적화된 제품을 추천합니다." },
-          { title: "영상 인식을 통한 동선 분석", image: sampleImage3, description: "고객 행동 패턴을 분석하여 최적화합니다." },
-          { title: "영상 인식을 통한 도난 감지", image: sampleImage4, description: "이상 행동을 감지하여 도난을 예방합니다." },
+          { title: "매장별 맞춤형 챗봇", image: sampleImage1, description: "AI가 매장 정보에 기반해 고객 문의에 실시간으로 응답합니다." },
+          { title: "최적화된 판매량 예측", image: sampleImage2, description: "최적화된 판매량 예측정보를 제공합니다." },
+          { title: "영상 인식을 이상 행동 탐지", image: sampleImage3, description: "CCTV 영상 속 절도를 비롯한 이상 행위를 감지합니다." },
+          { title: "영상 인식을 통한 화재 감지", image: sampleImage4, description: "CCTV 영상 속 화재를 감지합니다." },
         ].map((item, index) => (
           <Box key={index}>
             <FeatureCard
