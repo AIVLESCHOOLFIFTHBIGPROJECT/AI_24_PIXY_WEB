@@ -225,7 +225,15 @@ const Sales = () => {
 
   return (
     <Box sx={{ flexGrow: 1, p: 3, background: "transparent" }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >
         판매/재고
       </Typography>
       <Box

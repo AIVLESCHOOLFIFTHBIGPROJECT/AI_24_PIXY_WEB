@@ -203,7 +203,15 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>대시보드</Typography>
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >대시보드</Typography>
       <Box
         sx={{
           flexGrow: 1,

@@ -108,41 +108,65 @@ const PixyCustom = () => {
   };
 
   return (
-    <Box sx={{ height: '160vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', paddingTop: '20px' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px' }}>
-        <Box>
-          <Button variant="contained" component="label">
-            파일선택
-            <input type="file" accept=".csv" hidden onChange={handleFileChange} />
-          </Button>
-          <Button variant="contained" onClick={handleFileUpload} sx={{ ml: 1 }}>
-            업로드
-          </Button>
-          {uploadedFileName && (
-            <Typography sx={{ mt: 1 }}>{uploadedFileName}</Typography>
-          )}
-        </Box>
-        <Button
-          variant="contained"
-          onClick={startListening}
-          sx={{ padding: '10px 20px', fontSize: '16px', minWidth: '150px' }} // Adjusted minWidth to prevent resizing
-          disabled={listening || loading}
-        >
-          {loading ? <CircularProgress size={24} /> : 'Start Listening'}
-        </Button>
-      </Box>
-      <Box sx={{ maxWidth: '600px', width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#f9f9f9', mb: '20px' }}>
-        {chatHistory.length === 0 ? (
-          <Typography sx={{ textAlign: 'center', color: '#999' }}>PIXY와 대화를 시작해 보세요.</Typography>
-        ) : (
-          chatHistory.map((chat, index) => (
-            <Box key={index} sx={{ margin: '10px 0', textAlign: chat.type === 'question' ? 'left' : 'right' }}>
-              <Typography sx={{ backgroundColor: chat.type === 'question' ? '#e0f7fa' : '#ffe0b2', padding: '10px', borderRadius: '8px' }}>
-                {chat.content}
-              </Typography>
+    <Box sx={{ flexGrow: 1, p: 3 }}>
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >픽시 커스텀</Typography>
+      <Box
+        sx={{
+          flexGrow: 1,
+          p: { xs: 2, md: 4 },
+          background: "#ffffff",
+          border: "1px solid #e9ebf2",
+          borderRadius: "1.6rem",
+          display: "flex",
+          flexDirection: "column",
+          mb: "1.4rem",
+        }}
+      >
+        <Box sx={{ height: '160vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center'}}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '10px' }}>
+            <Box>
+              <Button variant="outlined" component="label">
+                파일선택
+                <input type="file" accept=".csv" hidden onChange={handleFileChange} />
+              </Button>
+              <Button variant="outlined" onClick={handleFileUpload} sx={{ ml: 1 }}>
+                업로드
+              </Button>
+              {uploadedFileName && (
+                <Typography sx={{ mt: 1 }}>{uploadedFileName}</Typography>
+              )}
             </Box>
-          ))
-        )}
+            <Button
+              variant="outlined"
+              onClick={startListening}
+              sx={{ padding: '10px 20px', fontSize: '16px', minWidth: '150px' }} // Adjusted minWidth to prevent resizing
+              disabled={listening || loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Start Listening'}
+            </Button>
+          </Box>
+          <Box sx={{ maxWidth: '600px', width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '8px', backgroundColor: '#f9f9f9', mb: '20px' }}>
+            {chatHistory.length === 0 ? (
+              <Typography sx={{ textAlign: 'center', color: '#999' }}>PIXY와 대화를 시작해 보세요.</Typography>
+            ) : (
+              chatHistory.map((chat, index) => (
+                <Box key={index} sx={{ margin: '10px 0', textAlign: chat.type === 'question' ? 'left' : 'right' }}>
+                  <Typography sx={{ backgroundColor: chat.type === 'question' ? '#e0f7fa' : '#ffe0b2', padding: '10px', borderRadius: '8px' }}>
+                    {chat.content}
+                  </Typography>
+                </Box>
+              ))
+            )}
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

@@ -390,8 +390,16 @@ const Settings = () => {
 
   return (
     <Box sx={{ flexGrow: 1, p: 3, background: 'transparent' }}>
-      <Typography variant="h4" gutterBottom sx={{ pb: '1.4rem' }}>
-        회원정보 수정
+      <Typography 
+            variant="h3" 
+            component="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: 'clamp(1rem, 3.5vw, 2rem)',
+            }}
+          >
+        설정
       </Typography>
       <Box
         sx={{
