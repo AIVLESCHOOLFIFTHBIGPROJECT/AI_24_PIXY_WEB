@@ -157,6 +157,7 @@ const CCTV = () => {
             onClick={() => {
               if (isDeleteMode) {
                 // deleteSelectedVideos(); // deleteSelectedVideos 함수가 아직 정의되지 않았으므로 주석 처리
+                setIsDeleteMode(false);
               } else {
                 setIsDeleteMode(true);
               }
