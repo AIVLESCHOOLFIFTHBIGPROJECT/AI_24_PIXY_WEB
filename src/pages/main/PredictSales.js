@@ -19,6 +19,10 @@ import {
   Pagination,
   InputAdornment,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
@@ -30,6 +34,7 @@ const PredictSales = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [fileName, setFileName] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const itemsPerPage = 10;
 
@@ -75,6 +80,7 @@ const PredictSales = () => {
     try {
       setLoading(true);
       setUploadError(null);
+      setDialogOpen(true); // Show the dialog when the upload starts
 
       // POST 요청
       await axios.post('https://api.pixy.kro.kr/api/store/predict/', formData, {
@@ -91,6 +97,7 @@ const PredictSales = () => {
       setUploadError('Failed to upload the file or fetch products.');
     } finally {
       setLoading(false);
+      setDialogOpen(false); // Close the dialog when the upload is complete
     }
   };
 
@@ -135,7 +142,7 @@ const PredictSales = () => {
   return (
     <Box sx={{ flexGrow: 1, p: 3, background: 'transparent' }}>
       <Typography variant="h4" gutterBottom sx={{ pb: '1.4rem' }}>
-      판매/예측
+        판매/예측
       </Typography>
       <Box
         sx={{
@@ -146,82 +153,84 @@ const PredictSales = () => {
           borderRadius: '1.6rem',
           display: 'flex',
           flexDirection: 'column',
-          //alignItems: 'center',
         }}
       >
-<Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between' }}>
+          <Box>
+            <Button variant="contained" component="label">
+              파일선택
+              <input type="file" hidden onChange={handleFileChange} />
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleUpload}
+              disabled={loading}
+              sx={{ ml: 2 }}
+            >
+              {loading ? <CircularProgress size={24} /> : '등록'}
+            </Button>
+            {uploadError && <Typography color="error">{uploadError}</Typography>}
+          </Box>
 
-<Box>
-        <Button variant="contained" component="label">
-          파일선택
-          <input type="file" hidden onChange={handleFileChange} />
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleUpload}
-          disabled={loading}
-          sx={{ ml: 2 }}
-        >
-          {loading ? <CircularProgress size={24} /> : '등록'}
-        </Button>
-        {uploadError && <Typography color="error">{uploadError}</Typography>}
-      </Box>
+          <Box sx={{ mb: 3 }}>
+            <DatePicker
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="날짜를 선택하거나 입력"
+              customInput={<CustomInput />}
+            />
+          </Box>
+        </Box>
 
-      <Box
-        sx={{ 
-          mb: 3, 
-          //display: 'flex', 
-          //justifyContent: 'flex-end' 
-          }}
-      >
-        <DatePicker
-          selected={selectedDate}
-          onChange={handleDateChange}
-          dateFormat="yyyy-MM-dd"
-          placeholderText="날짜를 선택하거나 입력"
-          customInput={<CustomInput />}
-        />
-      </Box>
-</Box>
-
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" gutterBottom sx={{ pb: '1.4rem' }}>
-          판매량 예측 목록
-        </Typography>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>번호</TableCell>
-                <TableCell>상품 분류</TableCell>
-                <TableCell>날짜</TableCell>
-                <TableCell>재고</TableCell>
-                <TableCell>판매량(예측)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentItems.map((product) => (
-                <TableRow key={product.s_num}>
-                  <TableCell>{product.s_num}</TableCell>
-                  <TableCell>{product.category}</TableCell>
-                  <TableCell>{product.date}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
-                  <TableCell>{product.sales}</TableCell>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h5" gutterBottom sx={{ pb: '1.4rem' }}>
+            판매량 예측 목록
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>번호</TableCell>
+                  <TableCell>상품 분류</TableCell>
+                  <TableCell>날짜</TableCell>
+                  <TableCell>재고</TableCell>
+                  <TableCell>판매량(예측)</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {currentItems.map((product) => (
+                  <TableRow key={product.s_num}>
+                    <TableCell>{product.s_num}</TableCell>
+                    <TableCell>{product.category}</TableCell>
+                    <TableCell>{product.date}</TableCell>
+                    <TableCell>{product.stock}</TableCell>
+                    <TableCell>{product.sales}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Pagination
+            count={pageCount}
+            page={currentPage + 1}
+            onChange={handlePageClick}
+          />
+        </Box>
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-        <Pagination
-          count={pageCount}
-          page={currentPage + 1}
-          onChange={handlePageClick}
-        />
-      </Box>
-      </Box>
+      <Dialog open={dialogOpen}>
+        <DialogTitle>판매량 예측중입니다.</DialogTitle>
+        <DialogContent>
+          <CircularProgress />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>닫기</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
