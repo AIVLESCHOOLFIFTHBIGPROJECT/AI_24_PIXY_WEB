@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import MainHeader from '../../components/main/MainHeader';
 import MainMenuBar from '../../components/main/MainMenuBar';
-import MainFooter from '../../components/main/MainFooter';
 import Footer from '../../components/Footer';
 import Dashboard from './Dashboard';
 import PixyCustom from './PixyCustom';
@@ -21,17 +20,31 @@ const drawerWidth = 240;
 
 const MainPage = () => {
   const isSmallScreen = useMediaQuery('(max-width:1200px)');
+  const screen1 = useMediaQuery('(min-width:1200px)');
+  const screen2 = useMediaQuery('(max-width:500px)');
+  const screen3 = useMediaQuery('(max-width:360px)');
+  const headerHeight = 64; // MainHeader의 높이
+  const footerHeight = 177.09;
+  const footerHeight1 = 197.11;
+  const footerHeight2 = 217.13;
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <MainHeader />
-      <Box sx={{ display: 'flex', flexDirection: isSmallScreen ? 'column' : 'row', marginTop: '64px' }}>
-        {
-          !isSmallScreen &&
-          <MainMenuBar />
-        }
-        <Box sx={{width: '100%'}}>
-          <Box component="main" sx={{ flexGrow: 1, p: 3, background: '#f3f5f9' }}>
-            {/* <Box component="main" sx={{ flexGrow: 1, p: 3, background: '#f5f5f5'}}> */}
+      <Box sx={{ display: 'flex', flexDirection: isSmallScreen ? 'column' : 'row', flexGrow: 1 }}>
+        {!isSmallScreen && <MainMenuBar />}
+        <Box sx={{ flexGrow: 1, mt: `${headerHeight}px`, display: 'flex', flexDirection: 'column' }}>
+          <Box 
+            component="main" 
+            sx={{ 
+              flexGrow: 1, 
+              p: 3, 
+              background: '#f3f5f9', 
+              minHeight: screen1?`calc(100vh - ${headerHeight}px - ${footerHeight})`:(screen2?`calc(100vh - ${headerHeight}px - ${footerHeight1})`:`calc(100vh - ${headerHeight}px - ${footerHeight2})`), // Header를 제외한 높이
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
             <Routes>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="pixycustom" element={<PixyCustom />} />
@@ -45,7 +58,6 @@ const MainPage = () => {
               <Route path="notifications" element={<Notifications />} />
               <Route path="/" element={<Navigate to="dashboard" />} />
             </Routes>
-            {/* <MainFooter /> */}
           </Box>
           <Footer />
         </Box>
