@@ -13,6 +13,7 @@ import ProductPage from './pages/ProductPage';
 import MainPage from './pages/main/MainPage';
 import PixyCustom from './pages/main/PixyCustom';
 import Inquiry from './pages/main/Inquiry';
+import Chatbot from './pages/ChatbotPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       {/* <AuthProvider> */}
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/chatbot" element={<Chatbot />}/>
             <Route path="/product" element={<ProductPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />}/>
