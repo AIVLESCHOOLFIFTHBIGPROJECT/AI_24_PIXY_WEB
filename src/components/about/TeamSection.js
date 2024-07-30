@@ -73,15 +73,15 @@ const TeamSection = () => {
       </Typography>
       <Grid container spacing={4} justifyContent="center">
         {[
-          { title: "CEO_최성찬", image: cscImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_노재훈", image: rjhImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_홍성윤", image: hsyImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_김도영", image: kdyImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_배성준", image: bsjImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_정우섭", image: jwsImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_조성민", image: jsmImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_신민철", image: smcImg, description: "경력1 \n 경력2 \n 경력3" },
-          { title: "역할_박유빈", image: pypImg, description: "경력1 \n 경력2 \n 경력3" },
+          { title: "최성찬", image: cscImg, description: "- 코딩 교육 플랫폼, MicroLearnable 개발 및 운영 \n - IT연합 동아리 PARD 공식 어플 개발 \n - chuchu.gg 개발 및 운영" },
+          { title: "노재훈", image: rjhImg, description: "- 한국정보기술학회 수중 센서 네트워크 논문 다수 게재 \n - 주식회사 피아농 대표 역임 및 예비창업패키지 최우수 수료 \n - NFT 민팅 사이트 ANDNEW Ticket 개발 및 운영" },
+          { title: "홍성윤", image: hsyImg, description: "- 금오공과대학교 컴퓨터공학과 학사 졸업 \n - 웹킷 공모전 장려상 수상 \n - 정보처리기사, sqld 자격증 보유" },
+          { title: "김도영", image: kdyImg, description: "- 한동대학교 컴퓨터공학심화 학사 졸업 \n - KT AIVLE School AI 개발자 트랙 \n - BCI (Brain Computer Interface) 연구실 연구생 (2023.2~)" },
+          { title: "배성준", image: bsjImg, description: "- 대구가톨릭대학교 컴퓨터공학 학사 졸업 \n - KT AIVLE School AI 개발자 트랙 \n - 경북, 영천 공모전 수상" },
+          { title: "정우섭", image: jwsImg, description: "- KT AIVLE School AI 개발자 트랙 \n - 한동대학교 컴퓨터공학부 졸업 \n -LG Aimers 수료" },
+          { title: "조성민", image: jsmImg, description: "- 한동대학교 컴퓨터공학, 전자공학 학사 졸업 \n - KT AIVLE School AI 개발자 트랙 \n - KCC 학부생 논문 우수상" },
+          { title: "신민철", image: smcImg, description: "- 경북대학교 학사 졸업 \n - EGCP 연구실 연구생(2023.2~) \n -경북, 영천 공모전 수상" },
+          { title: "박유빈", image: pypImg, description: "- KT AIVLE School AI 개발자 트랙 \n - 2023 4th Google Machine Learning Bootcamp \n - AICE Associate, TensorFlow Developer Certificate 등 보유" },
         ].map((item, index) => (
           <Grid 
             item 

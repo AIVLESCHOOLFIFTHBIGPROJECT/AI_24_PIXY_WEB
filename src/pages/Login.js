@@ -172,6 +172,30 @@ const Login = () => {
     }
   };
 
+  const handleTestLogin = async () => {
+    const testEmail = "wogns5493@naver.com"; // 테스트 계정 이메일
+    const testPassword = "aivle202405!"; // 테스트 계정 비밀번호
+
+    try {
+      const response = await api.post("/api/user/login/normal/", {
+        email: testEmail,
+        password: testPassword,
+      });
+      const { access_token, refresh, user_id, name } = response.data;
+      sessionStorage.setItem("access_token", access_token);
+
+      // 사용자 정보를 Context와 세션 스토리지에 저장
+      const userData = { user_id, name };
+      login(userData);
+
+      alert("테스트 로그인 성공");
+      navigate("/main/dashboard", { replace: true }); // 로그인 후 리다이렉트
+    } catch (error) {
+      alert("테스트 로그인 실패");
+      console.error("테스트 로그인 실패:", error.response.data);
+    }
+  };
+
   const handleFindEmail = async (e) => {
     e.preventDefault();
     const { name, p_num } = e.target.elements;
@@ -353,6 +377,14 @@ const Login = () => {
             />
             <Button type="submit" variant="contained" sx={{ width: "300px" }}>
               로그인
+            </Button>
+            <Button 
+              type="button"
+              variant="contained"
+              sx={{ width: "300px" }}
+              onClick={handleTestLogin}
+            >
+              테스트 계정 로그인
             </Button>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
