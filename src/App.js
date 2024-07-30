@@ -19,8 +19,6 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-
       {/* <AuthProvider> */}
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -37,7 +35,6 @@ function App() {
             {/* 다른 라우트들 */}
           </Routes>
         {/* </AuthProvider> */}
-      </Router>
     </ThemeProvider>
   );
 }
